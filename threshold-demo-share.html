@@ -1,0 +1,379 @@
+<title>Threshold Screen Test</title>
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Newsreader:opsz,wght@6..72,400;6..72,600&family=IBM+Plex+Mono:wght@400;500;600&family=IBM+Plex+Sans:wght@400;450;500;600&display=swap">
+<style>
+:root{--paper:#f4f6f8;--card:#fff;--sunk:#eaeef2;--ink:#12181f;--ink2:#3d4a58;--ink3:#6b7b8c;
+--rule:#d6dde4;--rule2:#e7ecf1;--navy:#1f3a63;--navys:#e4eaf4;--pass:#1c6b52;--passs:#dcece5;
+--fail:#a83c22;--fails:#f6e2dc;--warn:#8a6410;--warns:#f6ecd6;
+--mono:"IBM Plex Mono",ui-monospace,Menlo,monospace;
+--sans:"IBM Plex Sans",-apple-system,BlinkMacSystemFont,"Segoe UI",sans-serif;
+--serif:"Newsreader",Georgia,serif}
+@media(prefers-color-scheme:dark){:root:not([data-theme=light]){--paper:#0d1116;--card:#151b22;
+--sunk:#101620;--ink:#e8eef4;--ink2:#a8b6c4;--ink3:#74838f;--rule:#26313c;--rule2:#1d262f;
+--navy:#93b4e6;--navys:#1a2739;--pass:#6fc4a3;--passs:#142a24;--fail:#e08163;--fails:#2e1a15;
+--warn:#d6ab55;--warns:#2a2213}}
+:root[data-theme=dark]{--paper:#0d1116;--card:#151b22;--sunk:#101620;--ink:#e8eef4;--ink2:#a8b6c4;
+--ink3:#74838f;--rule:#26313c;--rule2:#1d262f;--navy:#93b4e6;--navys:#1a2739;--pass:#6fc4a3;
+--passs:#142a24;--fail:#e08163;--fails:#2e1a15;--warn:#d6ab55;--warns:#2a2213}
+*{box-sizing:border-box}
+body{margin:0;background:var(--paper);color:var(--ink);font-family:var(--sans);font-size:14px;
+line-height:1.5;-webkit-font-smoothing:antialiased}
+a{color:var(--navy)}
+.lbl{font-family:var(--mono);font-size:10px;letter-spacing:.13em;text-transform:uppercase;color:var(--ink3)}
+.num{font-family:var(--mono);font-variant-numeric:tabular-nums}
+:focus-visible{outline:2px solid var(--navy);outline-offset:2px;border-radius:3px}
+header{background:var(--card);border-bottom:1px solid var(--rule)}
+header .in{max-width:980px;margin:0 auto;padding:13px 22px;display:flex;gap:14px;align-items:baseline;flex-wrap:wrap}
+header h1{font-family:var(--serif);font-size:21px;margin:0;font-weight:600}
+header h1 a{text-decoration:none;color:inherit}
+header .sub{font-family:var(--mono);font-size:9.5px;letter-spacing:.16em;text-transform:uppercase;color:var(--ink3)}
+header nav{margin-left:auto;display:flex;gap:14px;font-size:12.5px}
+main{max-width:980px;margin:0 auto;padding:22px 22px 60px}
+h2.pt{font-family:var(--serif);font-size:25px;font-weight:600;margin:0 0 4px;letter-spacing:-.015em}
+p.psub{margin:0 0 18px;color:var(--ink3);font-size:13px}
+h3.sec{font-family:var(--mono);font-size:10px;letter-spacing:.13em;text-transform:uppercase;
+color:var(--ink3);font-weight:500;margin:26px 0 10px;padding-bottom:6px;border-bottom:1px solid var(--rule)}
+.card{background:var(--card);border:1px solid var(--rule);border-radius:5px;padding:15px;margin-bottom:9px}
+.row{display:flex;gap:12px;align-items:baseline;flex-wrap:wrap}
+.row .grow{flex:1;min-width:200px}
+.pill{font-family:var(--mono);font-size:9.5px;letter-spacing:.1em;text-transform:uppercase;
+padding:2px 7px;border-radius:2px;white-space:nowrap}
+.p-apply{background:var(--passs);color:var(--pass)}
+.p-arguable{background:var(--warns);color:var(--warn)}
+.p-open_question{background:var(--navys);color:var(--navy)}
+.p-blocked{background:var(--fails);color:var(--fail)}
+.p-gate{background:var(--navys);color:var(--navy);font-weight:600}
+.p-preference,.p-soft_required{background:var(--sunk);color:var(--ink3)}
+.st{font-family:var(--mono);font-size:10px;letter-spacing:.06em;text-transform:uppercase;font-weight:500}
+.s-met{color:var(--pass)}.s-arguable{color:var(--warn)}.s-missing{color:var(--fail)}.s-unknown{color:var(--navy)}
+.f{display:grid;grid-template-columns:56px 1fr;gap:10px;padding:10px 0;border-top:1px solid var(--rule2)}
+.f:first-child{border-top:0;padding-top:0}
+.f .txt{font-size:13px;line-height:1.4;margin:0 0 3px}
+.ev{font-size:11.5px;color:var(--ink2);line-height:1.45;margin:3px 0 0;padding-left:9px;
+border-left:2px solid var(--rule)}
+.ev cite{font-style:normal;font-family:var(--mono);font-size:10px;color:var(--ink3);display:block;margin-top:2px}
+.bar{height:6px;background:var(--sunk);border-radius:3px;overflow:hidden;margin-top:5px}
+.bar i{display:block;height:100%;background:var(--navy)}
+.bar i.hot{background:var(--fail)}
+.opt{display:flex;gap:10px;align-items:flex-start;padding:9px 10px;border:1px solid var(--rule);
+border-radius:4px;margin-bottom:6px;cursor:pointer}
+.opt:hover{border-color:color-mix(in srgb,var(--navy) 40%,var(--rule))}
+.opt input{margin:2px 0 0;accent-color:var(--navy);width:15px;height:15px;flex:none}
+.opt.pre{background:var(--fails);border-color:color-mix(in srgb,var(--fail) 38%,transparent)}
+.opt .t{font-size:12.5px;line-height:1.4}
+.opt .t small{display:block;font-family:var(--mono);font-size:10px;color:var(--ink3);margin-top:2px}
+button.go{font:inherit;font-size:13px;font-weight:500;background:var(--navy);color:var(--card);
+border:0;border-radius:4px;padding:8px 18px;cursor:pointer}
+input[type=text],textarea{font:inherit;font-size:12.5px;width:100%;padding:7px 9px;border:1px solid var(--rule);
+border-radius:4px;background:var(--sunk);color:var(--ink)}
+table{width:100%;border-collapse:collapse;font-size:12.5px}
+th{text-align:left;font-family:var(--mono);font-size:9.5px;letter-spacing:.09em;text-transform:uppercase;
+color:var(--ink3);font-weight:500;padding:0 10px 7px 0;border-bottom:1px solid var(--rule)}
+td{padding:8px 10px 8px 0;border-bottom:1px solid var(--rule2);color:var(--ink2);vertical-align:top}
+td:first-child{color:var(--ink)}
+.note{background:var(--warns);border:1px solid color-mix(in srgb,var(--warn) 30%,transparent);
+border-radius:4px;padding:11px 13px;font-size:12.5px;margin-bottom:10px;color:var(--ink)}
+.muted{color:var(--ink3);font-size:12px}
+footer{max-width:980px;margin:0 auto;padding:16px 22px 40px;color:var(--ink3);font-size:11.5px;
+border-top:1px solid var(--rule)}
+
+.wrap{max-width:900px;margin:0 auto;padding:24px 22px 70px}
+.hero{margin-bottom:22px}
+.hero h1{font-family:var(--serif);font-size:31px;font-weight:600;margin:0 0 8px;letter-spacing:-.015em;text-wrap:balance}
+.hero p{margin:0 0 10px;max-width:64ch;color:var(--ink2);font-size:14.5px}
+.steps{display:flex;gap:8px;margin:18px 0 20px;flex-wrap:wrap}
+.step{flex:1;min-width:150px;background:var(--card);border:1px solid var(--rule);border-radius:5px;padding:11px 13px}
+.step b{display:block;font-family:var(--mono);font-size:10px;letter-spacing:.12em;text-transform:uppercase;color:var(--navy);margin-bottom:4px}
+.step span{font-size:12.5px;color:var(--ink2)}
+.queue{display:grid;grid-template-columns:repeat(auto-fill,minmax(230px,1fr));gap:8px}
+.qc{background:var(--card);border:1px solid var(--rule);border-radius:5px;padding:11px 13px;text-align:left;
+    font:inherit;cursor:pointer;color:inherit}
+.qc:hover{border-color:var(--navy)}
+.qc.done{opacity:.5}
+.qc b{display:block;font-size:13.5px;margin-bottom:2px}
+.qc span{font-size:11.5px;color:var(--ink3)}
+.hidden{display:none!important}
+.stats{display:flex;gap:16px;flex-wrap:wrap;margin-bottom:14px}
+.stats div{background:var(--card);border:1px solid var(--rule);border-radius:5px;padding:10px 14px;min-width:110px}
+.stats b{display:block;font-family:var(--mono);font-size:20px;font-weight:600;font-variant-numeric:tabular-nums;letter-spacing:-.02em}
+.back{font:inherit;font-size:12.5px;background:none;border:0;color:var(--navy);cursor:pointer;padding:0;margin-bottom:12px}
+.gaterow{display:grid;grid-template-columns:1fr 74px 62px;gap:10px;align-items:center;padding:9px 0;border-top:1px solid var(--rule2)}
+.gaterow:first-of-type{border-top:0}
+.gaterow .n{font-family:var(--mono);font-size:13px;font-variant-numeric:tabular-nums;text-align:right}
+.offline{background:var(--warns);border:1px solid color-mix(in srgb,var(--warn) 30%,transparent);
+  border-radius:4px;padding:10px 13px;font-size:12.5px;margin-bottom:12px}
+textarea{min-height:74px;font-family:inherit}
+</style>
+
+<header><div class="in"><h1>Threshold</h1><span class="sub">gate ledger · demo</span>
+<nav><span id="live" class="muted">connecting…</span></nav></div></header>
+
+<div class="wrap">
+
+<section id="intro">
+  <div class="hero">
+    <h1>Would you click one of these?</h1>
+    <p>Threshold reads a job posting and splits it into <b>hard gates</b> — the requirements
+    that actually disqualify someone — and everything else. When you reject a candidate, it
+    offers that req&rsquo;s own gates instead of a generic dropdown, pre-checked from what it
+    found in the r&eacute;sum&eacute;.</p>
+    <p>Below is a real posting and thirteen candidates. Reject a few the way you normally would.
+    Two minutes. It is testing one thing: whether picking a specific reason is workable at the
+    moment you actually make the call.</p>
+  </div>
+  <div class="steps">
+    <div class="step"><b>1 · open a candidate</b><span>see the ledger and what was found</span></div>
+    <div class="step"><b>2 · reject or advance</b><span>confirm or correct the pre-checked reason</span></div>
+    <div class="step"><b>3 · see the audit</b><span>what each gate is costing the pipeline</span></div>
+  </div>
+  <p class="muted">Nothing you do here is recorded or sent anywhere — the tallies at the end are
+  computed in your browser from your own clicks and vanish when you close the tab. The candidates
+  are invented; the posting text is real.</p>
+  <p style="margin-top:16px"><button class="go" id="start">Start</button></p>
+</section>
+
+<section id="queue" class="hidden">
+  <h2 class="pt" id="reqtitle"></h2>
+  <p class="psub" id="reqsub"></p>
+  <h3 class="sec">Screen queue — reject or advance as many as you like</h3>
+  <div class="queue" id="cards"></div>
+  <p style="margin-top:18px"><button class="go" id="toaudit">See the audit</button></p>
+</section>
+
+<section id="cand" class="hidden">
+  <button class="back" id="backq">&larr; back to the queue</button>
+  <h2 class="pt" id="cname"></h2>
+  <p class="psub" id="cnote"></p>
+  <div class="card"><div class="row"><span class="pill" id="cverdict"></span>
+    <span class="num muted" id="csummary"></span></div></div>
+  <h3 class="sec">Requirement ledger</h3>
+  <div class="card" id="cledger"></div>
+  <h3 class="sec">Disposition</h3>
+  <div class="card">
+    <p class="muted" style="margin-top:0">Which requirement did they miss? Pre-checked from the
+    ledger — confirm or correct. More than one is allowed.</p>
+    <div id="copts"></div>
+    <p style="margin:12px 0 6px" class="lbl">Note (optional)</p>
+    <input type="text" id="cnotefield" placeholder="what actually decided it">
+    <div style="margin-top:14px;display:flex;gap:9px;align-items:center;flex-wrap:wrap">
+      <button class="go" id="doreject">Record rejection</button>
+      <button class="go" id="doadvance" style="background:var(--pass)">Advance</button>
+    </div>
+  </div>
+</section>
+
+<section id="audit" class="hidden">
+  <button class="back" id="backq2">&larr; back to the queue</button>
+  <h2 class="pt">Req audit</h2>
+  <p class="psub">Recomputed from every disposition recorded here, by everyone who has tried this.</p>
+  <div id="offline"></div>
+  <div class="stats" id="astats"></div>
+  <h3 class="sec">What each gate costs</h3>
+  <div class="card" id="agates"></div>
+  <h3 class="sec">Where the rejections went</h3>
+  <div class="card" id="abuckets"></div>
+  <h3 class="sec">Two questions</h3>
+  <div class="card">
+    <p class="lbl">When you reject someone at screen today, what do you actually click?</p>
+    <textarea id="q1" placeholder="a dropdown? free text? nothing?"></textarea>
+    <p class="lbl" style="margin-top:14px">Would you use this, and what is wrong with it?</p>
+    <textarea id="q2" placeholder="be blunt"></textarea>
+    <p class="lbl" style="margin-top:14px">Your role (optional)</p>
+    <input type="text" id="q3" placeholder="e.g. technical recruiter, agency, TA lead">
+    <div style="margin-top:14px"><button class="go" id="sendfb">Send</button>
+      <span class="muted" id="fbmsg"></span></div>
+  </div>
+</section>
+
+</div>
+
+<script>
+
+const DATA = {"candidates":[{"id":"amara-diallo","name":"Amara Diallo","note":"TPM, logistics","verdict":"open_question","summary":"4 gates \u00b7 1 unconfirmed","findings":[{"ordinal":1,"text":"This role requires up to 25% travel in the US and to Europe as needed to collaborate with our hardware partners and other cross-functional teams.","status":"unknown","detail":"a condition of the job, not a qualification, and nothing in a corpus answers it \u2014 ask the candidate"},{"ordinal":2,"text":"Minimum 7 years as a Technical Program Manager, Product Manager, or Engineering Manager in autonomous systems, robotics, embedded systems, or software development. Experience with automotive platforms, autonomous vehicles, or safety-critical software is beneficial.","status":"met","detail":"7 years of merged employment against 7 required"},{"ordinal":6,"text":"Strong project management experience with practical familiarity in both Agile and Waterfall methodologies and ability to apply them appropriately.","status":"met","detail":"matched on agile, waterfall"},{"ordinal":7,"text":"Ability to work in one of our offices at least 3 days per week.","status":"met","detail":"Pittsburgh, PA is one of the posting's locations"}],"suggested":[1]},{"id":"ben-whitfield","name":"Ben Whitfield","note":"Program director, health system","verdict":"blocked","summary":"4 gates \u00b7 1 missed \u00b7 2 unconfirmed","findings":[{"ordinal":1,"text":"This role requires up to 25% travel in the US and to Europe as needed to collaborate with our hardware partners and other cross-functional teams.","status":"unknown","detail":"a condition of the job, not a qualification, and nothing in a corpus answers it \u2014 ask the candidate"},{"ordinal":2,"text":"Minimum 7 years as a Technical Program Manager, Product Manager, or Engineering Manager in autonomous systems, robotics, embedded systems, or software development. Experience with automotive platforms, autonomous vehicles, or safety-critical software is beneficial.","status":"met","detail":"12 years of merged employment against 7 required"},{"ordinal":6,"text":"Strong project management experience with practical familiarity in both Agile and Waterfall methodologies and ability to apply them appropriately.","status":"missing","detail":"declared absent from the corpus: agile, waterfall"},{"ordinal":7,"text":"Ability to work in one of our offices at least 3 days per week.","status":"unknown","detail":"location requirement \u2014 confirm with the candidate"}],"suggested":[1,6,7]},{"id":"devon-okonkwo","name":"Devon Okonkwo","note":"TPM, medical devices","verdict":"open_question","summary":"4 gates \u00b7 1 unconfirmed","findings":[{"ordinal":1,"text":"This role requires up to 25% travel in the US and to Europe as needed to collaborate with our hardware partners and other cross-functional teams.","status":"unknown","detail":"a condition of the job, not a qualification, and nothing in a corpus answers it \u2014 ask the candidate"},{"ordinal":2,"text":"Minimum 7 years as a Technical Program Manager, Product Manager, or Engineering Manager in autonomous systems, robotics, embedded systems, or software development. Experience with automotive platforms, autonomous vehicles, or safety-critical software is beneficial.","status":"met","detail":"11 years of merged employment against 7 required"},{"ordinal":6,"text":"Strong project management experience with practical familiarity in both Agile and Waterfall methodologies and ability to apply them appropriately.","status":"met","detail":"matched on agile, waterfall"},{"ordinal":7,"text":"Ability to work in one of our offices at least 3 days per week.","status":"met","detail":"Pittsburgh, PA is one of the posting's locations"}],"suggested":[1]},{"id":"evan-prawda","name":"Evan Prawda","note":"independent \u2014 program leadership, safety-critical software","verdict":"open_question","summary":"4 gates \u00b7 2 unconfirmed","findings":[{"ordinal":1,"text":"This role requires up to 25% travel in the US and to Europe as needed to collaborate with our hardware partners and other cross-functional teams.","status":"unknown","detail":"a condition of the job, not a qualification, and nothing in a corpus answers it \u2014 ask the candidate"},{"ordinal":2,"text":"Minimum 7 years as a Technical Program Manager, Product Manager, or Engineering Manager in autonomous systems, robotics, embedded systems, or software development. Experience with automotive platforms, autonomous vehicles, or safety-critical software is beneficial.","status":"met","detail":"12 years of merged employment against 7 required"},{"ordinal":6,"text":"Strong project management experience with practical familiarity in both Agile and Waterfall methodologies and ability to apply them appropriately.","status":"unknown","detail":"nothing in the corpus mentions: agile, waterfall \u2014 true or not, it is not written down anywhere"},{"ordinal":7,"text":"Ability to work in one of our offices at least 3 days per week.","status":"met","detail":"Pittsburgh, PA is one of the posting's locations"}],"suggested":[1,6]},{"id":"hannah-lindqvist","name":"Hannah Lindqvist","note":"TPM, industrial","verdict":"blocked","summary":"4 gates \u00b7 1 missed \u00b7 1 unconfirmed","findings":[{"ordinal":1,"text":"This role requires up to 25% travel in the US and to Europe as needed to collaborate with our hardware partners and other cross-functional teams.","status":"unknown","detail":"a condition of the job, not a qualification, and nothing in a corpus answers it \u2014 ask the candidate"},{"ordinal":2,"text":"Minimum 7 years as a Technical Program Manager, Product Manager, or Engineering Manager in autonomous systems, robotics, embedded systems, or software development. Experience with automotive platforms, autonomous vehicles, or safety-critical software is beneficial.","status":"met","detail":"13 years of merged employment against 7 required"},{"ordinal":6,"text":"Strong project management experience with practical familiarity in both Agile and Waterfall methodologies and ability to apply them appropriately.","status":"missing","detail":"declared absent from the corpus: agile"},{"ordinal":7,"text":"Ability to work in one of our offices at least 3 days per week.","status":"met","detail":"Pittsburgh, PA is one of the posting's locations"}],"suggested":[1,6]},{"id":"idris-karim","name":"Idris Karim","note":"Sr PM, consumer","verdict":"blocked","summary":"4 gates \u00b7 2 missed \u00b7 1 unconfirmed","findings":[{"ordinal":1,"text":"This role requires up to 25% travel in the US and to Europe as needed to collaborate with our hardware partners and other cross-functional teams.","status":"unknown","detail":"a condition of the job, not a qualification, and nothing in a corpus answers it \u2014 ask the candidate"},{"ordinal":2,"text":"Minimum 7 years as a Technical Program Manager, Product Manager, or Engineering Manager in autonomous systems, robotics, embedded systems, or software development. Experience with automotive platforms, autonomous vehicles, or safety-critical software is beneficial.","status":"missing","detail":"5 years found against 7 required"},{"ordinal":6,"text":"Strong project management experience with practical familiarity in both Agile and Waterfall methodologies and ability to apply them appropriately.","status":"missing","detail":"declared absent from the corpus: waterfall"},{"ordinal":7,"text":"Ability to work in one of our offices at least 3 days per week.","status":"met","detail":"Pittsburgh, PA is one of the posting's locations"}],"suggested":[1,2,6]},{"id":"marcus-bell","name":"Marcus Bell","note":"PM, devtools","verdict":"blocked","summary":"4 gates \u00b7 1 missed \u00b7 1 unconfirmed","findings":[{"ordinal":1,"text":"This role requires up to 25% travel in the US and to Europe as needed to collaborate with our hardware partners and other cross-functional teams.","status":"unknown","detail":"a condition of the job, not a qualification, and nothing in a corpus answers it \u2014 ask the candidate"},{"ordinal":2,"text":"Minimum 7 years as a Technical Program Manager, Product Manager, or Engineering Manager in autonomous systems, robotics, embedded systems, or software development. Experience with automotive platforms, autonomous vehicles, or safety-critical software is beneficial.","status":"met","detail":"8 years of merged employment against 7 required"},{"ordinal":6,"text":"Strong project management experience with practical familiarity in both Agile and Waterfall methodologies and ability to apply them appropriately.","status":"missing","detail":"declared absent from the corpus: waterfall"},{"ordinal":7,"text":"Ability to work in one of our offices at least 3 days per week.","status":"met","detail":"Pittsburgh, PA is one of the posting's locations"}],"suggested":[1,6]},{"id":"maya-alvarez","name":"Maya Alvarez","note":"PM, health tech","verdict":"blocked","summary":"4 gates \u00b7 1 missed \u00b7 2 unconfirmed","findings":[{"ordinal":1,"text":"This role requires up to 25% travel in the US and to Europe as needed to collaborate with our hardware partners and other cross-functional teams.","status":"unknown","detail":"a condition of the job, not a qualification, and nothing in a corpus answers it \u2014 ask the candidate"},{"ordinal":2,"text":"Minimum 7 years as a Technical Program Manager, Product Manager, or Engineering Manager in autonomous systems, robotics, embedded systems, or software development. Experience with automotive platforms, autonomous vehicles, or safety-critical software is beneficial.","status":"met","detail":"9 years of merged employment against 7 required"},{"ordinal":6,"text":"Strong project management experience with practical familiarity in both Agile and Waterfall methodologies and ability to apply them appropriately.","status":"missing","detail":"declared absent from the corpus: waterfall"},{"ordinal":7,"text":"Ability to work in one of our offices at least 3 days per week.","status":"unknown","detail":"location requirement \u2014 confirm with the candidate"}],"suggested":[1,6,7]},{"id":"piotr-nowak","name":"Piotr Nowak","note":"Group PM, SaaS","verdict":"blocked","summary":"4 gates \u00b7 1 missed \u00b7 1 unconfirmed","findings":[{"ordinal":1,"text":"This role requires up to 25% travel in the US and to Europe as needed to collaborate with our hardware partners and other cross-functional teams.","status":"unknown","detail":"a condition of the job, not a qualification, and nothing in a corpus answers it \u2014 ask the candidate"},{"ordinal":2,"text":"Minimum 7 years as a Technical Program Manager, Product Manager, or Engineering Manager in autonomous systems, robotics, embedded systems, or software development. Experience with automotive platforms, autonomous vehicles, or safety-critical software is beneficial.","status":"met","detail":"10 years of merged employment against 7 required"},{"ordinal":6,"text":"Strong project management experience with practical familiarity in both Agile and Waterfall methodologies and ability to apply them appropriately.","status":"missing","detail":"declared absent from the corpus: agile, waterfall"},{"ordinal":7,"text":"Ability to work in one of our offices at least 3 days per week.","status":"met","detail":"Pittsburgh, PA is one of the posting's locations"}],"suggested":[1,6]},{"id":"priya-raman","name":"Priya Raman","note":"PM, data platform","verdict":"blocked","summary":"4 gates \u00b7 1 missed \u00b7 1 unconfirmed","findings":[{"ordinal":1,"text":"This role requires up to 25% travel in the US and to Europe as needed to collaborate with our hardware partners and other cross-functional teams.","status":"unknown","detail":"a condition of the job, not a qualification, and nothing in a corpus answers it \u2014 ask the candidate"},{"ordinal":2,"text":"Minimum 7 years as a Technical Program Manager, Product Manager, or Engineering Manager in autonomous systems, robotics, embedded systems, or software development. Experience with automotive platforms, autonomous vehicles, or safety-critical software is beneficial.","status":"met","detail":"8 years of merged employment against 7 required"},{"ordinal":6,"text":"Strong project management experience with practical familiarity in both Agile and Waterfall methodologies and ability to apply them appropriately.","status":"missing","detail":"declared absent from the corpus: waterfall"},{"ordinal":7,"text":"Ability to work in one of our offices at least 3 days per week.","status":"met","detail":"Pittsburgh, PA is one of the posting's locations"}],"suggested":[1,6]},{"id":"ruth-chen","name":"Ruth Chen","note":"Director, med device programs","verdict":"blocked","summary":"4 gates \u00b7 1 missed \u00b7 1 unconfirmed","findings":[{"ordinal":1,"text":"This role requires up to 25% travel in the US and to Europe as needed to collaborate with our hardware partners and other cross-functional teams.","status":"unknown","detail":"a condition of the job, not a qualification, and nothing in a corpus answers it \u2014 ask the candidate"},{"ordinal":2,"text":"Minimum 7 years as a Technical Program Manager, Product Manager, or Engineering Manager in autonomous systems, robotics, embedded systems, or software development. Experience with automotive platforms, autonomous vehicles, or safety-critical software is beneficial.","status":"met","detail":"14 years of merged employment against 7 required"},{"ordinal":6,"text":"Strong project management experience with practical familiarity in both Agile and Waterfall methodologies and ability to apply them appropriately.","status":"missing","detail":"declared absent from the corpus: agile"},{"ordinal":7,"text":"Ability to work in one of our offices at least 3 days per week.","status":"met","detail":"Pittsburgh, PA is one of the posting's locations"}],"suggested":[1,6]},{"id":"sofia-marchetti","name":"Sofia Marchetti","note":"PM, marketplace","verdict":"blocked","summary":"4 gates \u00b7 1 missed \u00b7 2 unconfirmed","findings":[{"ordinal":1,"text":"This role requires up to 25% travel in the US and to Europe as needed to collaborate with our hardware partners and other cross-functional teams.","status":"unknown","detail":"a condition of the job, not a qualification, and nothing in a corpus answers it \u2014 ask the candidate"},{"ordinal":2,"text":"Minimum 7 years as a Technical Program Manager, Product Manager, or Engineering Manager in autonomous systems, robotics, embedded systems, or software development. Experience with automotive platforms, autonomous vehicles, or safety-critical software is beneficial.","status":"met","detail":"9 years of merged employment against 7 required"},{"ordinal":6,"text":"Strong project management experience with practical familiarity in both Agile and Waterfall methodologies and ability to apply them appropriately.","status":"missing","detail":"declared absent from the corpus: waterfall"},{"ordinal":7,"text":"Ability to work in one of our offices at least 3 days per week.","status":"unknown","detail":"location requirement \u2014 confirm with the candidate"}],"suggested":[1,6,7]},{"id":"tomas-baptiste","name":"Tomas Baptiste","note":"PM, fintech","verdict":"blocked","summary":"4 gates \u00b7 2 missed \u00b7 2 unconfirmed","findings":[{"ordinal":1,"text":"This role requires up to 25% travel in the US and to Europe as needed to collaborate with our hardware partners and other cross-functional teams.","status":"unknown","detail":"a condition of the job, not a qualification, and nothing in a corpus answers it \u2014 ask the candidate"},{"ordinal":2,"text":"Minimum 7 years as a Technical Program Manager, Product Manager, or Engineering Manager in autonomous systems, robotics, embedded systems, or software development. Experience with automotive platforms, autonomous vehicles, or safety-critical software is beneficial.","status":"missing","detail":"6 years found against 7 required"},{"ordinal":6,"text":"Strong project management experience with practical familiarity in both Agile and Waterfall methodologies and ability to apply them appropriately.","status":"missing","detail":"declared absent from the corpus: waterfall"},{"ordinal":7,"text":"Ability to work in one of our offices at least 3 days per week.","status":"unknown","detail":"location requirement \u2014 confirm with the candidate"}],"suggested":[1,2,6,7]}],"req":{"title":"Senior Staff Product and Program Manager","company":"Aurora","location":"Pittsburgh, PA","comp_min":178000,"comp_max":285000,"stated":7},"gates":[{"ordinal":1,"text":"This role requires up to 25% travel in the US and to Europe as needed to collaborate with our hardware partners and other cross-functional teams."},{"ordinal":2,"text":"Minimum 7 years as a Technical Program Manager, Product Manager, or Engineering Manager in autonomous systems, robotics, embedded systems, or software development. Experience with automotive platforms, autonomous vehicles, or safety-critical software is beneficial."},{"ordinal":6,"text":"Strong project management experience with practical familiarity in both Agile and Waterfall methodologies and ability to apply them appropriately."},{"ordinal":7,"text":"Ability to work in one of our offices at least 3 days per week."}]};
+const $ = (id) => document.getElementById(id);
+const esc = (s) => String(s).replace(/[&<>"]/g, c => ({'&':'&amp;','<':'&lt;','>':'&gt;','"':'&quot;'}[c]));
+const SESSION = (Math.random().toString(36).slice(2) + Date.now().toString(36));
+const GATES = new Map(DATA.gates.map(g => [g.ordinal, g.text]));
+
+let db = null;
+let local = [];          // this viewer's dispositions, kept even without db
+let all = [];            // everyone's, when db is available
+let current = null, openedAt = 0;
+
+/* ---------- persistence, designed for absence ---------- */
+claude.use("db").then(ns => {
+  db = ns;
+  if (!db) { $("live").textContent = "local only"; return; }
+  db.collection("responses").onSnapshot(
+    snap => {
+      all = snap.docs.map(d => d.data()).filter(Boolean);
+      $("live").textContent = `${new Set(all.map(r => r.session)).size} people · ${all.length} dispositions`;
+      if (!$("audit").classList.contains("hidden")) renderAudit();
+    },
+    () => { $("live").textContent = "local only"; db = null; }
+  );
+}).catch(() => { $("live").textContent = "local only"; });
+
+async function save(rec) {
+  local.push(rec);
+  if (!db) return;
+  try { await db.collection("responses").add(rec); }
+  catch (e) { /* a dropped write must never block the flow */ }
+}
+
+/* ---------- navigation ---------- */
+const show = (id) => ["intro","queue","cand","audit"].forEach(s =>
+  $(s).classList.toggle("hidden", s !== id));
+
+$("start").onclick = () => { renderQueue(); show("queue"); };
+$("backq").onclick = () => { renderQueue(); show("queue"); };
+$("backq2").onclick = () => { renderQueue(); show("queue"); };
+$("toaudit").onclick = () => { renderAudit(); show("audit"); };
+
+/* ---------- queue ---------- */
+function renderQueue() {
+  $("reqtitle").textContent = DATA.req.title;
+  $("reqsub").textContent = `${DATA.req.company} · ${DATA.req.location} · `
+    + `${DATA.req.stated} stated requirements, ${DATA.gates.length} of them gates`;
+  const done = new Set(local.map(r => r.candidate));
+  $("cards").innerHTML = DATA.candidates.map(c => `
+    <button class="qc${done.has(c.id) ? " done" : ""}" data-id="${esc(c.id)}">
+      <b>${esc(c.name)}</b><span>${esc(c.note || "candidate")}</span></button>`).join("");
+  [...document.querySelectorAll(".qc")].forEach(b =>
+    b.onclick = () => openCandidate(b.dataset.id));
+}
+
+/* ---------- candidate ---------- */
+function openCandidate(id) {
+  current = DATA.candidates.find(c => c.id === id);
+  openedAt = Date.now();
+  $("cname").textContent = current.name;
+  $("cnote").textContent = current.note;
+  $("cverdict").textContent = current.verdict.replace(/_/g, " ");
+  $("cverdict").className = "pill p-" + current.verdict;
+  $("csummary").textContent = current.summary;
+  $("cledger").innerHTML = current.findings.map(f => `
+    <div class="f"><span class="pill p-gate">gate</span>
+      <div><p class="txt">${esc(f.text)}</p>
+        <span class="st s-${f.status}">${f.status}</span>
+        <p class="ev">${esc(f.detail)}</p></div></div>`).join("");
+  $("copts").innerHTML = current.findings.map(f => {
+    const pre = current.suggested.includes(f.ordinal);
+    return `<label class="opt${pre ? " pre" : ""}">
+      <input type="checkbox" value="${f.ordinal}" ${pre ? "checked" : ""}>
+      <span class="t">${esc(f.text)}<small>${esc(f.detail.slice(0, 90))}</small></span></label>`;
+  }).join("") + `
+    <label class="opt"><input type="checkbox" value="stronger">
+      <span class="t">Cleared everything — stronger candidates available
+      <small>not a gate failure</small></span></label>
+    <label class="opt"><input type="checkbox" value="other">
+      <span class="t">Other — not about the stated requirements
+      <small>if this is common, the posting is wrong</small></span></label>`;
+  $("cnotefield").value = "";
+  show("cand");
+}
+
+function chosen() {
+  return [...document.querySelectorAll("#copts input:checked")].map(i => i.value);
+}
+
+$("doreject").onclick = async () => {
+  const picked = chosen();
+  const kind = picked.includes("other") ? "other"
+    : picked.includes("stronger") ? "stronger_field" : "gate";
+  await save({
+    session: SESSION, candidate: current.id, outcome: "rejected", kind,
+    ordinals: picked.filter(v => /^\d+$/.test(v)).map(Number),
+    suggested: current.suggested,
+    note: ($("cnotefield").value || "").slice(0, 300),
+    seconds: Math.round((Date.now() - openedAt) / 1000),
+    at: new Date().toISOString(),
+  });
+  renderQueue(); show("queue");
+};
+
+$("doadvance").onclick = async () => {
+  await save({ session: SESSION, candidate: current.id, outcome: "advanced",
+    kind: "gate", ordinals: [], suggested: current.suggested, note: "",
+    seconds: Math.round((Date.now() - openedAt) / 1000),
+    at: new Date().toISOString() });
+  renderQueue(); show("queue");
+};
+
+/* ---------- audit ---------- */
+const MIN_SAMPLE = 8;
+
+function renderAudit() {
+  const rows = (db ? all : local);
+  const rejections = rows.filter(r => r.outcome === "rejected");
+  const n = rejections.length;
+  $("offline").innerHTML = db ? "" :
+    `<div class="offline">Shared results are unavailable in this view, so the audit below is
+     computed from your own ${local.length} decisions only.</div>`;
+
+  const people = new Set(rows.map(r => r.session)).size || 1;
+  const secs = rows.map(r => r.seconds).filter(s => typeof s === "number");
+  const median = secs.length ? secs.slice().sort((a,b)=>a-b)[Math.floor(secs.length/2)] : null;
+  $("astats").innerHTML = `
+    <div><span class="lbl">People</span><b>${people}</b></div>
+    <div><span class="lbl">Rejections</span><b>${n}</b></div>
+    <div><span class="lbl">Median time</span><b>${median === null ? "—" : median + "s"}</b></div>`;
+
+  const counts = new Map([...GATES.keys()].map(o => [o, {n: 0, sole: 0}]));
+  let other = 0, stronger = 0, none = 0, drift = 0, attributed = 0;
+  for (const r of rejections) {
+    if (r.kind === "other") other++;
+    else if (r.kind === "stronger_field") stronger++;
+    const ord = (r.ordinals || []).filter(o => counts.has(o));
+    if (!ord.length && r.kind === "gate") none++;
+    for (const o of ord) {
+      counts.get(o).n++;
+      if (ord.length === 1) counts.get(o).sole++;
+      attributed++;
+    }
+    const sug = new Set(r.suggested || []);
+    if (ord.some(o => !sug.has(o)) || [...sug].some(o => !ord.includes(o))) drift++;
+  }
+
+  const enough = n >= MIN_SAMPLE;
+  $("agates").innerHTML = [...counts.entries()]
+    .sort((a, b) => b[1].n - a[1].n)
+    .map(([o, c]) => {
+      const share = enough && n ? Math.round(100 * c.n / n) : null;
+      return `<div class="gaterow">
+        <div>${esc(GATES.get(o))}
+          <div class="bar"><i class="${share >= 40 ? "hot" : ""}" style="width:${share || 0}%"></i></div></div>
+        <div class="n">${c.n} rejected</div>
+        <div class="n">${share === null ? "—" : share + "%"}</div></div>`;
+    }).join("")
+    + (enough ? "" : `<p class="muted" style="margin:10px 0 0">${n} rejections — below the
+       ${MIN_SAMPLE} needed before a percentage means anything. Counts shown, rates withheld.</p>`);
+
+  $("abuckets").innerHTML = `<table>
+    <tr><th>Bucket</th><th>Count</th><th>What it means</th></tr>
+    <tr><td>Attributed to a gate</td><td class="num">${attributed}</td>
+        <td>usable — the audit is built from these</td></tr>
+    <tr><td>Cleared everything, weaker field</td><td class="num">${stronger}</td>
+        <td>not a gate failure; excluded from pool cost</td></tr>
+    <tr><td>Other — not the stated requirements</td><td class="num">${other}</td>
+        <td>the posting is not describing the real decision</td></tr>
+    <tr><td>Rejected with nothing selected</td><td class="num">${none}</td>
+        <td>capture gap — the thing that would kill this product</td></tr>
+    <tr><td>Corrected the pre-check</td><td class="num">${drift}</td>
+        <td>how often the suggestion was wrong</td></tr></table>`;
+}
+
+$("sendfb").onclick = async () => {
+  const body = {
+    session: SESSION, kind: "feedback",
+    q1: ($("q1").value || "").slice(0, 1200),
+    q2: ($("q2").value || "").slice(0, 1200),
+    role: ($("q3").value || "").slice(0, 120),
+    at: new Date().toISOString(),
+  };
+  if (db) { try { await db.collection("feedback").add(body); } catch (e) {} }
+  $("fbmsg").textContent = db ? "sent — thank you" : "nothing is sent from this page — please say it out loud instead";
+};
+
+</script>

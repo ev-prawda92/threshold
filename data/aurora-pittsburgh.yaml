@@ -1,0 +1,144 @@
+# Hand-labeled evaluation set.
+# Source: aurora.tech/careers, Pittsburgh, PA. Scraped 2026-08-31.
+# Requirement text is verbatim from the postings. Labels per LABELING.md.
+
+company: Aurora
+scraped: 2026-08-31
+postings:
+
+- id: staff-safety-research-scientist
+  title: Staff Safety Research Scientist
+  dept: Safety
+  zone: Pittsburgh, PA
+  comp: {min: 171000, max: 273000}
+  requirements:
+  - {section: required, label: gate,          text: "Bachelor's degree in Data Science, Statistics, Mathematics, Physics, Engineering, Computer Science, or equivalent applicable technical experience"}
+  - {section: required, label: gate,          text: "7+ years of progressive experience solving large-scale complex problems"}
+  - {section: required, label: gate,          text: "Experience in risk modeling, probabilistic analysis, and complex decision systems"}
+  - {section: required, label: gate,          text: "Deep command of statistical methods. Adept at querying, analyzing, and visualizing large datasets"}
+  - {section: required, label: gate,          text: "Proficiency in Python for data science and statistical computing; familiarity with R or other statistical tools is a plus"}
+  - {section: required, label: soft_required, text: "Excellent communication and presentation skills, with the ability to convey complex information to various audiences"}
+  - {section: required, label: soft_required, text: "Strong leadership skills, with the ability to provide guidance and mentorship"}
+  - {section: required, label: soft_required, text: "Ability to work independently, as part of a cross-functional team, or as a project lead"}
+  - {section: required, label: gate,          text: "Experience working in safety and/or risk"}
+  - {section: required, label: gate,          text: "A portfolio of publications and/or conference presentations", note: "hard gate hiding in plain sight — checkable and disqualifying"}
+  - {section: desirable, label: preference,   text: "Advanced degree in Statistics, Mathematics, Physics, Engineering, Computer Science, or equivalent applicable technical experience"}
+  - {section: desirable, label: preference,   text: "Familiarity with complex operational environments"}
+  - {section: desirable, label: preference,   text: "Proficient in working with advanced data transformation tools such as DBT"}
+  - {section: desirable, label: preference,   text: "Skilled in building and deploying using Amazon Web Services (AWS) tools"}
+  - {section: desirable, label: preference,   text: "Background in the Autonomous Vehicles, Aerospace, or Robotics domains"}
+
+- id: senior-staff-product-and-program-manager
+  title: Senior Staff Product and Program Manager
+  dept: Product Management & Design
+  zone: Pittsburgh, PA
+  comp: {min: 178000, max: 285000}
+  requirements:
+  - {section: required, label: gate,          text: "This role requires up to 25% travel in the US and to Europe as needed to collaborate with our hardware partners and other cross-functional teams."}
+  - {section: required, label: gate,          text: "Minimum 7 years as a Technical Program Manager, Product Manager, or Engineering Manager in autonomous systems, robotics, embedded systems, or software development. Experience with automotive platforms, autonomous vehicles, or safety-critical software is beneficial.", note: "the trailing 'or software development' is what decides this one"}
+  - {section: required, label: preference,    text: "Bachelor's degree in Engineering, Computer Science, Math, Information Systems or a related area, or the equivalent in experience with evidence of exceptional ability preferred.", note: "hedged into a preference despite the required heading"}
+  - {section: required, label: soft_required, text: "Strong written and verbal communication skills with the ability to adjust communication based on audience."}
+  - {section: required, label: soft_required, text: "Solid technical aptitude enabling understanding of technical designs, software development lifecycle, challenges and risks, plus ability to work closely with engineers."}
+  - {section: required, label: gate,          text: "Strong project management experience with practical familiarity in both Agile and Waterfall methodologies and ability to apply them appropriately."}
+  - {section: required, label: gate,          text: "Ability to work in one of our offices at least 3 days per week."}
+
+- id: staff-safety-standards-engineer
+  title: Staff Safety Standards Engineer
+  dept: Safety
+  zone: Pittsburgh, PA
+  comp: {min: 171000, max: 273000}
+  requirements:
+  - {section: required, label: gate,          text: "Bachelor's degree in Engineering, Science, or a related technical field"}
+  - {section: required, label: gate,          text: "10+ years in safety, compliance, regulatory, or related engineering roles within transportation or an adjacent safety critical industry"}
+  - {section: required, label: gate,          text: "Expert knowledge of automotive safety policy, regulation, and standards"}
+  - {section: required, label: gate,          text: "Thorough understanding of product development life cycles that incorporate safety"}
+  - {section: required, label: soft_required, text: "Proven ability to develop, negotiate, and communicate safety policy, technical analyses, and compliance information to diverse audiences"}
+  - {section: required, label: soft_required, text: "Demonstrated ability to manage complex, cross-functional programs and external stakeholder relationships"}
+  - {section: required, label: gate,          text: "Experience representing an organization with regulators, standards development organizations, and industry coalitions"}
+  - {section: required, label: soft_required, text: "Strong analytical skills with the ability to translate technical findings into clear safety policy or recommendations"}
+  - {section: required, label: soft_required, text: "Effective communication and collaboration skills across all levels"}
+  - {section: desirable, label: preference,   text: "Direct experience with automotive, ADAS or autonomous vehicle compliance, standards, or certification"}
+  - {section: desirable, label: preference,   text: "Familiarity with homologation, type approval, or certification processes for light-duty or commercial vehicles"}
+  - {section: desirable, label: preference,   text: "Exposure to international regulatory frameworks (e.g., UNECE)"}
+  - {section: desirable, label: preference,   text: "Experience working within or alongside a federal agency, regulatory body, or public-private partnership"}
+  - {section: desirable, label: preference,   text: "Familiarity with safety challenges of ML-based systems"}
+  - {section: desirable, label: preference,   text: "Advanced degree in a relevant technical or regulatory discipline"}
+
+- id: map-product-analyst-i
+  title: Map Product Analyst I
+  dept: Software Engineering
+  zone: Pittsburgh, PA
+  comp: {min: 72000, max: 108000}
+  requirements:
+  - {section: required, label: gate,          text: "3+ years of professional experience in operational analytics, quality assurance, process improvement, or a closely related analytical role."}
+  - {section: required, label: gate,          text: "Demonstrated experience designing and executing in-depth root cause analyses on operational workflows or large-scale workforce performance."}
+  - {section: required, label: gate,          text: "Proven experience conducting user research methodologies, such as direct user shadowing, focus groups, or user acceptance testing."}
+  - {section: required, label: gate,          text: "Proficiency in SQL or similar database querying languages to extract, manipulate, and analyze user efficiency and quality data independently."}
+  - {section: required, label: soft_required, text: "Strong written and verbal communication skills, demonstrated by creating documentation for analysis results and presenting findings in clear, concise, and organized manner."}
+  - {section: desirable, label: preference,   text: "Previous experience working within Geographic Information Systems (GIS), mapping operations, or the autonomous vehicle industry."}
+  - {section: desirable, label: preference,   text: "Experience monitoring, auditing, or managing the performance of third-party vendor workforces."}
+  - {section: desirable, label: preference,   text: "Lean Six Sigma Green Belt, Certified Quality Auditor (CQA), or similar process improvement certification."}
+
+- id: staff-software-engineer-perception
+  title: Staff Software Engineer, Perception
+  dept: Software Engineering
+  zone: Pittsburgh, PA
+  requirements:
+  - {section: required, label: gate,          text: "Master's degree or higher in Computer Science, Robotics, Electrical Engineering, or a related field (or Bachelor with 2+ years of relevant industry experience in software engineering)."}
+  - {section: required, label: gate,          text: "Proficient software engineering skills in C++ and Python, with a focus on writing clean, scalable, and efficient production-quality code."}
+  - {section: required, label: gate,          text: "Working knowledge in one or more focus areas of ML: deep learning, computer vision, recursive state estimation, structured prediction, optimization, and others."}
+  - {section: required, label: gate,          text: "Experience with PyTorch, Tensorflow, and/or other deep learning frameworks"}
+  - {section: desirable, label: preference,   text: "Experience deploying production-grade CV/ML models within real-time computing environments."}
+  - {section: desirable, label: preference,   text: "Strong grasp of fundamentals: linear algebra, discrete and continuous optimization, supervised and unsupervised methods, generative and discriminative methods, and Hidden Markov Models."}
+  - {section: desirable, label: preference,   text: "Hands-on experience with VLM, foundational or world models."}
+  - {section: desirable, label: preference,   text: "Hands-on experience in CUDA or high-performance GPU programming for accelerated computing."}
+  - {section: desirable, label: preference,   text: "Publication record at top-tier robotics/computer vision conferences/journals, or strong industry experience in relevant fields (robotics, computer vision, self-driving technology)"}
+  - {section: desirable, label: preference,   text: "Demonstrated experience automating ML workflows and optimizing training pipelines for efficiency."}
+  - {section: desirable, label: preference,   text: "Contributions to open source project(s)"}
+  - {section: desirable, label: preference,   text: "Proven ability to thrive in highly collaborative, cross-functional engineering environments."}
+
+- id: test-triage-analyst-i
+  title: Test Triage Analyst I
+  dept: Software Engineering
+  zone: Pittsburgh, PA
+  requirements:
+  - {section: required, label: soft_required, text: "Superb analytical and problem solving skills, and an ability to verbalize the why and how"}
+  - {section: required, label: soft_required, text: "Passionate about working with teams and collaborating with partners"}
+  - {section: required, label: soft_required, text: "Capability to comprehend and analyze technical system-level failures in complex autonomous software, including root cause analysis and troubleshooting"}
+  - {section: required, label: soft_required, text: "Strong interpersonal and communication skills with the ability to bridge the gap between operations, safety, product, and technical groups"}
+  - {section: required, label: gate,          text: "Demonstrated expertise in creating, executing, and optimizing workflows while identifying bottlenecks"}
+  - {section: required, label: soft_required, text: "Planning and organizational abilities that allow for independent prioritization and follow-through"}
+  - {section: required, label: soft_required, text: "Comfortable navigating fast-paced, fluid working environment"}
+  - {section: desirable, label: preference,   text: "Bachelor's or Master's degree in STEM, Statistics, Operations Research, Computer Science, or Engineering"}
+  - {section: desirable, label: preference,   text: "1+ year(s) of experience working with autonomous vehicles or robotics industries"}
+  - {section: desirable, label: preference,   text: "Background in test evaluation, root cause analysis, or quality assurance domains"}
+  - {section: desirable, label: preference,   text: "Intermediate knowledge and experience using various coding, scripting and / or querying languages such as SQL or Python"}
+  - {section: desirable, label: preference,   text: "Experience with simulation software"}
+
+- id: technical-program-manager-hw-systems-and-safety
+  title: Technical Program Manager, HW Systems and Safety
+  dept: Hardware & Embedded Engineering
+  zone: Pittsburgh, PA
+  requirements:
+  - {section: required, label: gate,          text: "Based at an Aurora office, in Pittsburgh, PA or San Francisco / Mountain View, CA in support of our mission first policy. Ability to travel."}
+  - {section: required, label: gate,          text: "Bachelor's degree or equivalent practical experience"}
+  - {section: required, label: gate,          text: "3-5 years of program management experience in a fast paced, highly fluid environment or other evidence of exceptional ability"}
+  - {section: required, label: gate,          text: "Experience developing hardware through defined Product Development Process of Stage Gates."}
+  - {section: required, label: soft_required, text: "Strong communication skills, both written and verbal, across all levels of the organization from engineers to executives"}
+  - {section: required, label: soft_required, text: "Solid technical aptitude and an ability to understand technical designs, challenges and risks. Prior experience in engineering roles as an individual contributor is a plus."}
+  - {section: required, label: soft_required, text: "Self-starter capable of adapting to and solving project management challenges in dynamic settings"}
+  - {section: required, label: gate,          text: "Demonstrated proficiency with project management software for executing initiatives"}
+  - {section: required, label: gate,          text: "Experience using AI tools within a business setting to solve problems and improve productivity"}
+
+- id: logistics-analyst
+  title: Logistics Analyst
+  dept: Global Supply Chain & Purchasing
+  zone: Pittsburgh, PA
+  requirements:
+  - {section: required, label: gate,          text: "5+ years in supply chain, logistics, or operations strategy — ideally within autonomous vehicles, robotics, aerospace, or another dynamic, hardware-centric environment"}
+  - {section: required, label: soft_required, text: "Demonstrated ability to own an initiative end-to-end (concept to implementation) without relying on pre-existing process infrastructure"}
+  - {section: required, label: gate,          text: "Strong NetSuite proficiency spanning both financial capture/planning/reporting and operational workflows"}
+  - {section: required, label: soft_required, text: "Demonstrated composure and sound judgment operating across both lean/informal and enterprise-grade process environments amid continuous change"}
+  - {section: desirable, label: preference,   text: "Practical coding or vibe coding ability (Python, GitHub, AI-assisted dev tools) to stitch together interim solutions across existing systems"}
+  - {section: desirable, label: preference,   text: "Experience designing or contributing to external-facing systems (e.g., customer/service-provider request or queuing portals)"}
+  - {section: desirable, label: preference,   text: "Familiarity with customs, freight, or contract manufacturing operations"}

@@ -1,0 +1,292 @@
+<title>Disposition Capture</title>
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Newsreader:opsz,wght@6..72,400;6..72,500;6..72,600&family=IBM+Plex+Mono:wght@400;500;600&family=IBM+Plex+Sans:wght@400;450;500;600&display=swap">
+<style>
+  :root{
+    --paper:#f4f6f8; --card:#ffffff; --sunk:#eaeef2; --shell:#eef1f5;
+    --ink:#12181f; --ink-2:#3d4a58; --ink-3:#6b7b8c;
+    --rule:#d6dde4; --rule-2:#e7ecf1;
+    --navy:#1f3a63; --navy-soft:#e4eaf4;
+    --pass:#1c6b52; --pass-soft:#dcece5;
+    --fail:#a83c22; --fail-soft:#f6e2dc;
+    --warn:#8a6410; --warn-soft:#f6ecd6;
+    --shadow:0 1px 2px rgba(18,24,31,.05),0 8px 24px -16px rgba(18,24,31,.28);
+    --lift:0 18px 48px -22px rgba(18,24,31,.45),0 2px 6px rgba(18,24,31,.08);
+    --mono:"IBM Plex Mono",ui-monospace,SFMono-Regular,Menlo,monospace;
+    --sans:"IBM Plex Sans",-apple-system,BlinkMacSystemFont,"Segoe UI",sans-serif;
+    --serif:"Newsreader",Georgia,"Times New Roman",serif;
+  }
+  @media (prefers-color-scheme:dark){
+    :root:not([data-theme="light"]){
+      --paper:#0d1116; --card:#151b22; --sunk:#101620; --shell:#11171e;
+      --ink:#e8eef4; --ink-2:#a8b6c4; --ink-3:#74838f;
+      --rule:#26313c; --rule-2:#1d262f;
+      --navy:#93b4e6; --navy-soft:#1a2739;
+      --pass:#6fc4a3; --pass-soft:#142a24;
+      --fail:#e08163; --fail-soft:#2e1a15;
+      --warn:#d6ab55; --warn-soft:#2a2213;
+      --shadow:0 1px 2px rgba(0,0,0,.4),0 10px 28px -18px rgba(0,0,0,.9);
+      --lift:0 20px 54px -20px rgba(0,0,0,.95),0 2px 8px rgba(0,0,0,.5);
+    }
+  }
+  :root[data-theme="dark"]{
+    --paper:#0d1116; --card:#151b22; --sunk:#101620; --shell:#11171e;
+    --ink:#e8eef4; --ink-2:#a8b6c4; --ink-3:#74838f;
+    --rule:#26313c; --rule-2:#1d262f;
+    --navy:#93b4e6; --navy-soft:#1a2739;
+    --pass:#6fc4a3; --pass-soft:#142a24;
+    --fail:#e08163; --fail-soft:#2e1a15;
+    --warn:#d6ab55; --warn-soft:#2a2213;
+    --shadow:0 1px 2px rgba(0,0,0,.4),0 10px 28px -18px rgba(0,0,0,.9);
+    --lift:0 20px 54px -20px rgba(0,0,0,.95),0 2px 8px rgba(0,0,0,.5);
+  }
+
+  *{box-sizing:border-box}
+  body{background:var(--paper);color:var(--ink);font-family:var(--sans);font-size:14px;line-height:1.5;
+       -webkit-font-smoothing:antialiased}
+  .lbl{font-family:var(--mono);font-size:10px;letter-spacing:.13em;text-transform:uppercase;color:var(--ink-3)}
+  .wrap{max-width:1080px;margin:0 auto;padding:26px 24px 60px}
+  :focus-visible{outline:2px solid var(--navy);outline-offset:2px;border-radius:3px}
+
+  .intro{margin-bottom:24px}
+  .intro .lbl{display:block;margin-bottom:7px}
+  .intro h1{font-family:var(--serif);font-size:30px;font-weight:600;margin:0 0 8px;letter-spacing:-.015em;
+            text-wrap:balance}
+  .intro p{margin:0;max-width:65ch;color:var(--ink-2);font-size:14.5px}
+
+  /* ---------- fake ATS shell ---------- */
+  .ats{border:1px solid var(--rule);border-radius:6px;overflow:hidden;background:var(--shell);
+       box-shadow:var(--shadow);position:relative}
+  .ats-bar{background:var(--card);border-bottom:1px solid var(--rule);padding:9px 14px;display:flex;
+           align-items:center;gap:12px}
+  .dots{display:flex;gap:5px}.dots i{width:9px;height:9px;border-radius:50%;background:var(--rule)}
+  .ats-bar .name{font-family:var(--mono);font-size:11px;color:var(--ink-3);letter-spacing:.04em}
+  .ats-body{display:grid;grid-template-columns:210px 1fr;min-height:430px}
+  @media (max-width:820px){.ats-body{grid-template-columns:1fr}}
+  .ats-list{border-right:1px solid var(--rule);background:var(--card);padding:12px 0}
+  .ats-list .hd{padding:0 14px 9px;border-bottom:1px solid var(--rule-2);margin-bottom:6px}
+  .cand{padding:9px 14px;border-left:3px solid transparent;font-size:13px;color:var(--ink-2)}
+  .cand span{display:block;font-family:var(--mono);font-size:10.5px;color:var(--ink-3);margin-top:1px}
+  .cand.on{background:var(--navy-soft);border-left-color:var(--navy);color:var(--ink);font-weight:500}
+  .ats-main{padding:16px 18px;background:var(--card)}
+  .tabs{display:flex;gap:18px;border-bottom:1px solid var(--rule);margin-bottom:14px}
+  .tabs span{padding-bottom:8px;font-size:12.5px;color:var(--ink-3)}
+  .tabs span.on{color:var(--ink);border-bottom:2px solid var(--navy);font-weight:500}
+  .ats-main h3{margin:0 0 2px;font-size:18px;font-weight:600}
+  .ats-main .who{color:var(--ink-3);font-size:12.5px;margin:0 0 16px}
+  .fakelines i{display:block;height:8px;border-radius:4px;background:var(--sunk);margin-bottom:9px}
+  .btns{display:flex;gap:9px;margin-top:20px}
+  .btn{font:inherit;font-size:13px;padding:7px 15px;border-radius:4px;border:1px solid var(--rule);
+       background:var(--card);color:var(--ink-2);cursor:default}
+  .btn.rej{border-color:color-mix(in srgb,var(--fail) 45%,transparent);color:var(--fail);
+           background:var(--fail-soft);font-weight:500}
+
+  /* ---------- the overlay ---------- */
+  .overlay{position:absolute;right:16px;bottom:16px;width:min(430px,calc(100% - 32px));background:var(--card);
+           border:1px solid var(--navy);border-radius:6px;box-shadow:var(--lift);overflow:hidden}
+  .ov-head{background:var(--navy-soft);padding:10px 14px;border-bottom:1px solid var(--rule);
+           display:flex;align-items:baseline;gap:8px}
+  .ov-head strong{font-family:var(--serif);font-size:15px;font-weight:600}
+  .ov-head .tag{font-family:var(--mono);font-size:9px;letter-spacing:.12em;text-transform:uppercase;
+                color:var(--navy);margin-left:auto}
+  .ov-body{padding:13px 14px}
+  .ov-q{font-size:13px;margin:0 0 11px;color:var(--ink-2)}
+  .opt{display:flex;gap:10px;align-items:flex-start;padding:9px;border:1px solid var(--rule);border-radius:4px;
+       margin-bottom:6px;cursor:pointer;transition:border-color .12s,background .12s}
+  .opt:hover{border-color:color-mix(in srgb,var(--navy) 40%,var(--rule))}
+  .opt input{margin:2px 0 0;accent-color:var(--navy);width:15px;height:15px;flex:none}
+  .opt .t{font-size:12.5px;line-height:1.4}
+  .opt .ev{display:block;font-family:var(--mono);font-size:10px;color:var(--ink-3);margin-top:3px}
+  .opt.pre{background:var(--fail-soft);border-color:color-mix(in srgb,var(--fail) 38%,transparent)}
+  .opt.pre .ev{color:var(--fail)}
+  .opt.sep{margin-top:11px;border-style:dashed}
+  .ov-foot{border-top:1px solid var(--rule);padding:10px 14px;background:var(--sunk);font-size:11.5px;
+           color:var(--ink-3);display:flex;align-items:center;gap:10px;flex-wrap:wrap}
+  .ov-foot .go{font:inherit;font-size:12px;font-weight:500;background:var(--navy);color:var(--card);
+               border:0;border-radius:4px;padding:6px 14px;margin-left:auto;cursor:pointer}
+  #echo{font-family:var(--mono);font-size:10.5px;color:var(--ink-2)}
+
+  /* ---------- comparison + modes ---------- */
+  h2.sec{font-family:var(--mono);font-size:10px;letter-spacing:.13em;text-transform:uppercase;color:var(--ink-3);
+         font-weight:500;margin:34px 0 12px;padding-bottom:6px;border-bottom:1px solid var(--rule)}
+  .two{display:grid;grid-template-columns:repeat(auto-fit,minmax(300px,1fr));gap:14px}
+  .card{background:var(--card);border:1px solid var(--rule);border-radius:5px;padding:16px}
+  .card h4{margin:0 0 3px;font-family:var(--serif);font-size:16px;font-weight:600}
+  .card .sub{margin:0 0 12px;font-size:12px;color:var(--ink-3)}
+  .card.bad h4{color:var(--fail)} .card.good h4{color:var(--pass)}
+  select.mock{font:inherit;font-size:12.5px;width:100%;padding:7px 9px;border:1px solid var(--rule);
+              border-radius:4px;background:var(--sunk);color:var(--ink-2)}
+  .card p.note{font-size:12.5px;line-height:1.5;color:var(--ink-2);margin:11px 0 0}
+
+  .mode{display:grid;grid-template-columns:34px 1fr;gap:12px;padding:13px 0;border-top:1px solid var(--rule-2)}
+  .mode:first-of-type{border-top:0;padding-top:0}
+  .mode .n{font-family:var(--mono);font-size:11px;font-weight:600;color:var(--navy);background:var(--navy-soft);
+           border-radius:4px;height:26px;display:flex;align-items:center;justify-content:center}
+  .mode h5{margin:0 0 3px;font-size:13.5px;font-weight:600}
+  .mode p{margin:0;font-size:12.5px;line-height:1.45;color:var(--ink-2)}
+  .mode .when{font-family:var(--mono);font-size:10px;color:var(--ink-3);letter-spacing:.06em}
+
+  footer{margin-top:32px;padding-top:15px;border-top:1px solid var(--rule);color:var(--ink-3);font-size:11.5px;
+         display:flex;gap:14px;flex-wrap:wrap;align-items:baseline}
+  footer em{font-family:var(--serif);font-style:italic;font-size:14px;color:var(--ink-2)}
+  @media (prefers-reduced-motion:reduce){*{transition:none!important}}
+</style>
+
+<div class="wrap">
+
+  <div class="intro">
+    <span class="lbl">Threshold · capture</span>
+    <h1>One click at the moment of rejection</h1>
+    <p>Every number in a req audit depends on one field no applicant tracking system has: <em>which
+      requirement</em> the candidate missed. It has to be captured where the decision is made, and it has to
+      be faster than what the recruiter does today — otherwise it never gets filled in and the whole thing
+      is worthless.</p>
+  </div>
+
+  <div class="ats">
+    <div class="ats-bar">
+      <span class="dots"><i></i><i></i><i></i></span>
+      <span class="name">your applicant tracking system — candidate review</span>
+    </div>
+    <div class="ats-body">
+      <div class="ats-list">
+        <div class="hd"><span class="lbl">Screen · 12</span></div>
+        <div class="cand">D. Okonkwo<span>screened</span></div>
+        <div class="cand on">M. Alvarez<span>in review</span></div>
+        <div class="cand">R. Chen<span>screened</span></div>
+        <div class="cand">P. Nowak<span>screened</span></div>
+        <div class="cand">T. Baptiste<span>new</span></div>
+      </div>
+      <div class="ats-main">
+        <div class="tabs"><span class="on">Application</span><span>Résumé</span><span>Scorecards</span>
+          <span>Details</span></div>
+        <h3>Maya Alvarez</h3>
+        <p class="who">Senior Staff Product and Program Manager · Screen · applied 9 days ago</p>
+        <div class="fakelines">
+          <i style="width:92%"></i><i style="width:78%"></i><i style="width:86%"></i><i style="width:54%"></i>
+          <i style="width:70%"></i><i style="width:40%"></i>
+        </div>
+        <div class="btns">
+          <span class="btn">Advance</span>
+          <span class="btn rej">Reject</span>
+          <span class="btn">Snooze</span>
+        </div>
+      </div>
+    </div>
+
+    <div class="overlay">
+      <div class="ov-head"><strong>Which requirement did they miss?</strong>
+        <span class="tag">Threshold</span></div>
+      <div class="ov-body">
+        <p class="ov-q">Two look likely from the résumé. Confirm or correct — you can pick more than one.</p>
+
+        <label class="opt pre"><input type="checkbox" checked data-t="travel">
+          <span class="t">Up to 25% travel, US and Europe
+            <span class="ev">no travel signal found in application</span></span></label>
+
+        <label class="opt pre"><input type="checkbox" checked data-t="agile/waterfall">
+          <span class="t">Practical familiarity with both Agile and Waterfall
+            <span class="ev">agile stated · waterfall not found</span></span></label>
+
+        <label class="opt"><input type="checkbox" data-t="7 yrs TPM/PM/EM">
+          <span class="t">7+ years as TPM, PM, or EM
+            <span class="ev">9 yrs found — clears</span></span></label>
+
+        <label class="opt"><input type="checkbox" data-t="office 3 days">
+          <span class="t">In-office 3 days per week
+            <span class="ev">Pittsburgh — clears</span></span></label>
+
+        <label class="opt sep"><input type="checkbox" data-t="stronger field">
+          <span class="t">Cleared everything — stronger candidates available</span></label>
+
+        <label class="opt"><input type="checkbox" data-t="other">
+          <span class="t">Other — not about the stated requirements
+            <span class="ev">tell us what actually decided it</span></span></label>
+      </div>
+      <div class="ov-foot">
+        <span id="echo">writes: travel, agile/waterfall</span>
+        <button class="go" type="button">Reject</button>
+      </div>
+    </div>
+  </div>
+
+  <h2 class="sec">Why this is less work, not more</h2>
+  <div class="two">
+    <div class="card bad">
+      <h4>Today</h4>
+      <p class="sub">One generic list, shared by every req in the company</p>
+      <select class="mock" aria-label="Today's rejection reasons">
+        <option>Select a rejection reason…</option>
+        <option>Lacks required experience</option>
+        <option>Not a culture fit</option>
+        <option>Stronger candidates available</option>
+        <option>Compensation misalignment</option>
+        <option>Timing / availability</option>
+        <option>Other</option>
+      </select>
+      <p class="note">Fifteen options, none of them about this job. The recruiter picks the closest one,
+        which is usually “lacks required experience” — a phrase that describes 200 rejections and explains
+        none of them. Nothing downstream can use it.</p>
+    </div>
+    <div class="card good">
+      <h4>With the ledger</h4>
+      <p class="sub">Four options, in the words of this req, pre-checked</p>
+      <p class="note" style="margin-top:0">The recruiter has just decided this person doesn&rsquo;t clear
+        something. Naming it is recall, not analysis. Threshold pre-selects what the résumé suggests, so the
+        common case is confirming a guess rather than answering a question — and a click is less work than
+        typing a sentence.</p>
+      <p class="note"><b style="color:var(--ink)">The escape hatches are the point.</b> “Stronger candidates
+        available” keeps a strong field from reading as a throttling gate. “Other” prevents force-fitting —
+        and a req where “other” dominates has just told you that you are not deciding on the criteria you
+        published, which is a finding worth the subscription on its own.</p>
+    </div>
+  </div>
+
+  <h2 class="sec">Three ways it gets in front of the recruiter</h2>
+  <div class="card">
+    <div class="mode">
+      <span class="n">01</span>
+      <div><span class="when">Week one · no code</span>
+        <h5>Custom rejection reasons, configured per job</h5>
+        <p>Greenhouse and Ashby both let you define rejection reasons on a per-job basis. Parse the req by
+          hand, configure its four gates as the reasons, and the capture works today inside the ATS the team
+          already uses. This is how you test whether recruiters will actually do it — before building
+          anything.</p></div>
+    </div>
+    <div class="mode">
+      <span class="n">02</span>
+      <div><span class="when">Month one · browser extension</span>
+        <h5>An overlay on the ATS page</h5>
+        <p>The panel above, injected at the disposition moment. Adds the pre-checked suggestions, which the
+          native field cannot do, and works across ATSs without waiting for a partnership. It writes back to
+          the ATS&rsquo;s own rejection field, so nothing lives only in Threshold and nobody has to trust a
+          second system of record.</p></div>
+    </div>
+    <div class="mode">
+      <span class="n">03</span>
+      <div><span class="when">Month three · API</span>
+        <h5>Native integration through the partner ecosystem</h5>
+        <p>Harvest and equivalent APIs to read reqs and candidates and write dispositions back. Cleaner, and
+          it needs a partner listing and a security review — which is why it is third, not first.</p></div>
+    </div>
+  </div>
+
+  <footer>
+    <em>The field nobody collects.</em>
+    <span>Concept mockup · requirement text is verbatim from a live posting; the candidate and the applicant
+      tracking system shown are fictional.</span>
+  </footer>
+</div>
+
+<script>
+  const boxes = [...document.querySelectorAll('.opt input')];
+  const echo = document.getElementById('echo');
+  const paint = () => {
+    const on = boxes.filter(b => b.checked).map(b => b.dataset.t);
+    echo.textContent = on.length ? 'writes: ' + on.join(', ') : 'pick at least one reason';
+    boxes.forEach(b => b.closest('.opt').classList.toggle('pre', b.checked));
+  };
+  boxes.forEach(b => b.addEventListener('change', paint));
+  paint();
+</script>

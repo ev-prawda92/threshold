@@ -1,0 +1,46 @@
+# Committed stand-in. Copy to profile.yaml (gitignored) and fill in your own.
+# See LABELING.md for how requirements are classified, and README.md for the idea.
+
+person:
+  name: Jane Example
+  location: Pittsburgh, PA
+  open_to_relocation: true
+  current_scope: senior
+  target_band_floor_usd: 150000
+evidence:
+- id: emp.example
+  kind: employment
+  org: Example Health
+  title: Program Director
+  start: 2020-01
+  end: 2024-12
+  claims:
+  - Led a multi-site clinical systems implementation end to end
+  tags:
+  - program-management
+  - safety-critical
+  source: resume
+- id: work.example
+  kind: repo
+  title: example-engine
+  language: Python
+  claims:
+  - Deterministic evaluation harness with per-decision provenance
+  tags:
+  - python
+  - evaluation
+  source: github.com/example/example-engine
+- id: edu.example
+  kind: education
+  org: Example University
+  credential: MSc, Statistics
+  year: 2021
+  tags:
+  - advanced-degree
+  - statistics
+  source: resume
+absent:
+- publications
+- robotics
+- iso_26262
+- phd

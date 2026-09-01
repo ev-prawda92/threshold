@@ -1,0 +1,11 @@
+profile.yaml
+__pycache__/
+*.pyc
+.venv/
+.pytest_cache/
+out/
+threshold.db
+.DS_Store
+threshold-repo/
+threshold-repo.zip
+demo/candidates/

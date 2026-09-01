@@ -1,0 +1,583 @@
+<title>Threshold</title>
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Newsreader:opsz,wght@6..72,400;6..72,500;6..72,600&family=IBM+Plex+Mono:wght@400;500;600&family=IBM+Plex+Sans:wght@400;450;500;600&display=swap">
+<style>
+  :root{
+    --paper:#f4f6f8; --card:#ffffff; --sunk:#eaeef2;
+    --ink:#12181f; --ink-2:#3d4a58; --ink-3:#6b7b8c;
+    --rule:#d6dde4; --rule-2:#e7ecf1;
+    --navy:#1f3a63; --navy-soft:#e4eaf4;
+    --pass:#1c6b52; --pass-soft:#dcece5;
+    --fail:#a83c22; --fail-soft:#f6e2dc;
+    --warn:#8a6410; --warn-soft:#f6ecd6;
+    --shadow:0 1px 2px rgba(18,24,31,.05),0 8px 24px -16px rgba(18,24,31,.28);
+    --mono:"IBM Plex Mono",ui-monospace,SFMono-Regular,Menlo,monospace;
+    --sans:"IBM Plex Sans",-apple-system,BlinkMacSystemFont,"Segoe UI",sans-serif;
+    --serif:"Newsreader",Georgia,"Times New Roman",serif;
+  }
+  @media (prefers-color-scheme:dark){
+    :root:not([data-theme="light"]){
+      --paper:#0d1116; --card:#151b22; --sunk:#101620;
+      --ink:#e8eef4; --ink-2:#a8b6c4; --ink-3:#74838f;
+      --rule:#26313c; --rule-2:#1d262f;
+      --navy:#93b4e6; --navy-soft:#1a2739;
+      --pass:#6fc4a3; --pass-soft:#142a24;
+      --fail:#e08163; --fail-soft:#2e1a15;
+      --warn:#d6ab55; --warn-soft:#2a2213;
+      --shadow:0 1px 2px rgba(0,0,0,.4),0 10px 28px -18px rgba(0,0,0,.9);
+    }
+  }
+  :root[data-theme="dark"]{
+    --paper:#0d1116; --card:#151b22; --sunk:#101620;
+    --ink:#e8eef4; --ink-2:#a8b6c4; --ink-3:#74838f;
+    --rule:#26313c; --rule-2:#1d262f;
+    --navy:#93b4e6; --navy-soft:#1a2739;
+    --pass:#6fc4a3; --pass-soft:#142a24;
+    --fail:#e08163; --fail-soft:#2e1a15;
+    --warn:#d6ab55; --warn-soft:#2a2213;
+    --shadow:0 1px 2px rgba(0,0,0,.4),0 10px 28px -18px rgba(0,0,0,.9);
+  }
+
+  *{box-sizing:border-box}
+  body{background:var(--paper);color:var(--ink);font-family:var(--sans);font-size:14px;line-height:1.5;
+       -webkit-font-smoothing:antialiased}
+  .lbl{font-family:var(--mono);font-size:10px;letter-spacing:.13em;text-transform:uppercase;color:var(--ink-3)}
+  .num{font-family:var(--mono);font-variant-numeric:tabular-nums}
+  button{font:inherit;color:inherit;background:none;border:0;cursor:pointer}
+  :focus-visible{outline:2px solid var(--navy);outline-offset:2px;border-radius:2px}
+
+  /* ---- masthead ---- */
+  header{border-bottom:1px solid var(--rule);background:var(--card);padding:14px 22px;
+         display:flex;align-items:center;gap:18px;flex-wrap:wrap}
+  .mark{display:flex;align-items:baseline;gap:9px}
+  .mark h1{font-family:var(--serif);font-size:22px;font-weight:600;margin:0;letter-spacing:-.01em}
+  .mark .sub{font-family:var(--mono);font-size:9.5px;letter-spacing:.16em;text-transform:uppercase;color:var(--ink-3)}
+  .chip{font-family:var(--mono);font-size:10px;letter-spacing:.06em;padding:3px 8px;border:1px solid var(--rule);
+        border-radius:2px;color:var(--ink-2);white-space:nowrap}
+  .chip.on{border-color:color-mix(in srgb,var(--pass) 38%,transparent);color:var(--pass);background:var(--pass-soft)}
+  .sources{display:flex;gap:6px;flex-wrap:wrap;margin-left:auto}
+
+  /* ---- ingest bar ---- */
+  .ingest{background:var(--sunk);border-bottom:1px solid var(--rule);padding:10px 22px;
+          display:flex;align-items:center;gap:14px;flex-wrap:wrap}
+  .url{font-family:var(--mono);font-size:11.5px;color:var(--ink-2);background:var(--card);border:1px solid var(--rule);
+       border-radius:3px;padding:6px 10px;flex:1;min-width:260px;overflow:hidden;text-overflow:ellipsis;white-space:nowrap}
+  .ingest .stat{font-family:var(--mono);font-size:11px;color:var(--ink-3);white-space:nowrap}
+  .ingest .stat b{color:var(--ink);font-weight:600}
+
+  /* ---- shell ---- */
+  .shell{display:grid;grid-template-columns:196px minmax(0,1.15fr) minmax(0,1fr);gap:1px;background:var(--rule-2);
+         min-height:calc(100vh - 118px)}
+  .col{background:var(--paper);padding:18px 20px;min-width:0}
+  @media (max-width:1080px){.shell{grid-template-columns:1fr}.col{border-bottom:1px solid var(--rule)}}
+
+  .rail section{margin-bottom:24px}
+  .rail h3{margin:0 0 10px;font-family:var(--mono);font-size:10px;letter-spacing:.13em;text-transform:uppercase;
+           color:var(--ink-3);font-weight:500}
+  .kv{display:flex;justify-content:space-between;align-items:baseline;padding:4px 0;border-bottom:1px dotted var(--rule)}
+  .kv:last-child{border-bottom:0}
+  .kv span{color:var(--ink-2);font-size:12.5px}
+  .kv b{font-family:var(--mono);font-size:12.5px;font-weight:500;font-variant-numeric:tabular-nums}
+  .note{font-size:11.5px;line-height:1.5;color:var(--ink-3);border-left:2px solid var(--rule);padding-left:9px}
+
+  /* ---- ranked list ---- */
+  .tier{margin-bottom:20px}
+  .tier-head{display:flex;align-items:baseline;gap:9px;margin-bottom:8px}
+  .tier-head h2{margin:0;font-family:var(--serif);font-size:16px;font-weight:600}
+  .tier-head .lbl{margin-left:auto}
+  .row{width:100%;text-align:left;display:block;background:var(--card);border:1px solid var(--rule);
+       border-radius:4px;padding:11px 13px;margin-bottom:7px;transition:border-color .12s,transform .12s}
+  .row:hover{border-color:color-mix(in srgb,var(--navy) 45%,var(--rule))}
+  .row[aria-current="true"]{border-color:var(--navy);box-shadow:var(--shadow)}
+  .row-top{display:flex;align-items:baseline;gap:10px}
+  .rank{font-family:var(--mono);font-size:11px;color:var(--ink-3);width:16px;flex:none}
+  .role{font-weight:500;font-size:14px;letter-spacing:-.005em}
+  .dept{font-size:11.5px;color:var(--ink-3);margin-left:auto;white-space:nowrap}
+  .row-bot{display:flex;align-items:center;gap:12px;margin-top:9px;padding-left:26px;flex-wrap:wrap}
+
+  /* the gate rail: solid block = hard gate, thin tick = preference */
+  .rail-ticks{display:flex;align-items:flex-end;gap:3px;height:16px}
+  .g{width:11px;height:16px;border-radius:1px}
+  .g.met{background:var(--pass)}
+  .g.miss{background:var(--fail)}
+  .g.part{background:linear-gradient(180deg,var(--pass) 50%,var(--warn) 50%)}
+  .p{width:5px;height:8px;border-radius:1px}
+  .p.met{background:color-mix(in srgb,var(--pass) 55%,transparent)}
+  .p.miss{background:var(--rule)}
+  .tally{font-family:var(--mono);font-size:11px;color:var(--ink-2);font-variant-numeric:tabular-nums}
+  .verdict{font-family:var(--mono);font-size:9.5px;letter-spacing:.1em;text-transform:uppercase;
+           padding:2px 7px;border-radius:2px}
+  .v-apply{background:var(--pass-soft);color:var(--pass)}
+  .v-arg{background:var(--warn-soft);color:var(--warn)}
+  .v-block{background:var(--fail-soft);color:var(--fail)}
+  .v-lvl{background:var(--navy-soft);color:var(--navy)}
+  .pay{margin-left:auto;font-family:var(--mono);font-size:11.5px;color:var(--ink-2);font-variant-numeric:tabular-nums}
+  .collapsed{font-size:12.5px;color:var(--ink-3);border:1px dashed var(--rule);border-radius:4px;padding:10px 13px}
+
+  /* ---- detail ---- */
+  .panel{background:var(--card);border:1px solid var(--rule);border-radius:4px;padding:16px;margin-bottom:14px}
+  .panel > h3{margin:0 0 12px;font-family:var(--mono);font-size:10px;letter-spacing:.13em;text-transform:uppercase;
+              color:var(--ink-3);font-weight:500}
+  .detail-head h2{margin:0 0 3px;font-family:var(--serif);font-size:20px;font-weight:600;line-height:1.2;
+                  text-wrap:balance}
+  .detail-head p{margin:0;font-size:12.5px;color:var(--ink-3)}
+
+  .req{display:grid;grid-template-columns:52px 1fr;gap:10px;padding:10px 0;border-top:1px solid var(--rule-2)}
+  .req:first-of-type{border-top:0;padding-top:0}
+  .req .type{font-family:var(--mono);font-size:9px;letter-spacing:.09em;text-transform:uppercase;
+             padding:2px 0;text-align:center;border-radius:2px;height:fit-content}
+  .type.gate{background:var(--navy-soft);color:var(--navy);font-weight:600}
+  .type.pref{background:var(--sunk);color:var(--ink-3)}
+  .req .what{font-size:13px;line-height:1.4;margin:0 0 4px}
+  .req .status{font-family:var(--mono);font-size:10px;letter-spacing:.06em;text-transform:uppercase;font-weight:500}
+  .s-met{color:var(--pass)} .s-miss{color:var(--fail)} .s-part{color:var(--warn)}
+  .ev{font-size:11.5px;color:var(--ink-2);line-height:1.45;margin:3px 0 0;padding-left:9px;
+      border-left:2px solid var(--rule)}
+  .ev cite{font-style:normal;font-family:var(--mono);font-size:10px;color:var(--ink-3);display:block;margin-top:2px}
+
+  /* comp */
+  .band{margin:6px 0 4px}
+  .band-track{position:relative;height:30px;background:var(--sunk);border-radius:3px;border:1px solid var(--rule)}
+  .band-fill{position:absolute;inset:0 auto 0 0;background:var(--navy-soft);border-right:1px solid var(--navy);
+             border-radius:3px 0 0 3px}
+  .band-mark{position:absolute;top:-4px;bottom:-4px;width:2px;background:var(--ink)}
+  .band-mark::after{content:attr(data-l);position:absolute;top:-15px;left:50%;transform:translateX(-50%);
+                    font-family:var(--mono);font-size:9px;letter-spacing:.06em;color:var(--ink);white-space:nowrap}
+  .band-ends{display:flex;justify-content:space-between;margin-top:6px;font-family:var(--mono);font-size:11px;
+             color:var(--ink-3);font-variant-numeric:tabular-nums}
+  .derived{display:grid;grid-template-columns:1fr 1fr;gap:10px;margin-top:14px}
+  .derived div{background:var(--sunk);border-radius:3px;padding:9px 11px}
+  .derived b{display:block;font-family:var(--mono);font-size:17px;font-weight:600;font-variant-numeric:tabular-nums;
+             letter-spacing:-.02em}
+  .ask{margin-top:12px;background:var(--pass-soft);border-radius:3px;padding:11px 12px;font-size:12.5px;
+       line-height:1.5;color:var(--ink)}
+  .ask b{font-family:var(--mono);font-variant-numeric:tabular-nums}
+
+  /* outcome */
+  .track{display:flex;gap:0;margin-top:2px}
+  .step{flex:1;text-align:center;padding:7px 2px;border:1px solid var(--rule);border-right:0;
+        font-family:var(--mono);font-size:9.5px;letter-spacing:.06em;text-transform:uppercase;color:var(--ink-3)}
+  .step:first-child{border-radius:3px 0 0 3px}
+  .step:last-child{border-right:1px solid var(--rule);border-radius:0 3px 3px 0}
+  .step.done{background:var(--navy-soft);color:var(--navy);border-color:color-mix(in srgb,var(--navy) 30%,var(--rule))}
+  .step.now{background:var(--navy);color:var(--card);border-color:var(--navy);font-weight:600}
+
+  footer{border-top:1px solid var(--rule);padding:16px 22px 28px;color:var(--ink-3);font-size:11.5px;
+         display:flex;gap:16px;flex-wrap:wrap;align-items:baseline}
+  footer em{font-family:var(--serif);font-style:italic;font-size:14px;color:var(--ink-2)}
+  .legend{display:flex;gap:14px;flex-wrap:wrap;margin-left:auto;align-items:center}
+  .legend span{display:flex;align-items:center;gap:5px;font-family:var(--mono);font-size:10px;color:var(--ink-3)}
+  .s-open{color:var(--navy)}
+  .rescore{background:var(--warn-soft);border-bottom:1px solid var(--rule);padding:9px 22px;
+           font-size:12.5px;color:var(--ink);display:flex;gap:10px;align-items:baseline;flex-wrap:wrap}
+  .rescore b{font-weight:600}
+  .rescore .lbl{color:var(--warn)}
+  .risk{border-left:2px solid var(--warn);padding-left:10px;font-size:12.5px;line-height:1.5;color:var(--ink-2)}
+  .asks{display:flex;flex-direction:column;gap:0}
+  .askrow{display:grid;grid-template-columns:92px 1fr;gap:11px;padding:11px 0;border-top:1px solid var(--rule-2)}
+  .askrow:first-child{border-top:0;padding-top:0}
+  .askrow .k{font-family:var(--mono);font-size:9.5px;letter-spacing:.09em;text-transform:uppercase;color:var(--ink-3);padding-top:3px}
+  .askrow .n{font-family:var(--mono);font-size:15px;font-weight:600;font-variant-numeric:tabular-nums;letter-spacing:-.02em;display:block;margin-bottom:3px}
+  .askrow .n small{font-family:var(--sans);font-size:11.5px;font-weight:400;color:var(--ink-3);letter-spacing:0;margin-left:6px}
+  .askrow p{margin:0;font-size:12px;line-height:1.45;color:var(--ink-2)}
+  .cmp{width:100%;border-collapse:collapse;font-size:12px;margin-top:4px}
+  .cmp th{text-align:left;font-family:var(--mono);font-size:9.5px;letter-spacing:.09em;text-transform:uppercase;
+          color:var(--ink-3);font-weight:500;padding:0 8px 6px 0;border-bottom:1px solid var(--rule)}
+  .cmp td{padding:6px 8px 6px 0;border-bottom:1px solid var(--rule-2);color:var(--ink-2);vertical-align:top}
+  .cmp td:first-child{color:var(--ink)}
+  .cmp .neg{color:var(--fail)} .cmp .pos{color:var(--pass)}
+  .seq{counter-reset:s;margin:0;padding:0;list-style:none}
+  .seq li{counter-increment:s;position:relative;padding:0 0 9px 26px;font-size:12.5px;line-height:1.45;color:var(--ink-2)}
+  .seq li::before{content:counter(s);position:absolute;left:0;top:1px;width:17px;height:17px;border-radius:50%;
+                  background:var(--navy-soft);color:var(--navy);font-family:var(--mono);font-size:10px;
+                  display:flex;align-items:center;justify-content:center;font-weight:600}
+  .seq b{color:var(--ink)}
+  @media (prefers-reduced-motion:reduce){*{transition:none!important}}
+</style>
+
+<header>
+  <div class="mark">
+    <h1>Threshold</h1>
+    <span class="sub">Gate ledger</span>
+  </div>
+  <span class="chip">Concept mockup</span>
+  <div class="sources">
+    <span class="lbl" style="align-self:center">Evidence corpus</span>
+    <span class="chip on">Résumé · 24 claims</span>
+    <span class="chip on">GitHub · 6 repos</span>
+    <span class="chip on">LinkedIn</span>
+    <span class="chip on">USPTO 19/632,273</span>
+  </div>
+</header>
+
+<div class="ingest">
+  <span class="lbl">Careers page</span>
+  <div class="url">aurora.tech/careers?locations=Pittsburgh,+PA</div>
+  <span class="stat"><b>38</b> roles parsed</span>
+  <span class="stat"><b>214</b> requirements extracted</span>
+  <span class="stat">scanned 4 min ago</span>
+</div>
+
+<div class="rescore">
+  <span class="lbl">Re-scored</span>
+  <span>Ranking changed after re-parsing from <b>verbatim</b> posting text. The summarized version
+  dropped the clause &ldquo;or software development&rdquo; from the experience gate and moved two
+  Safety Research Scientist requirements out of the required section. Two roles swapped places.</span>
+</div>
+
+<div class="shell">
+
+  <!-- ============ rail ============ -->
+  <div class="col rail">
+    <section>
+      <h3>Profile</h3>
+      <div class="kv"><span>Years in scope</span><b>11</b></div>
+      <div class="kv"><span>Domains</span><b>3</b></div>
+      <div class="kv"><span>Evidence items</span><b>37</b></div>
+      <div class="kv"><span>Unverified claims</span><b>2</b></div>
+    </section>
+    <section>
+      <h3>Pipeline</h3>
+      <div class="kv"><span>Scored</span><b>38</b></div>
+      <div class="kv"><span>Recommended</span><b>4</b></div>
+      <div class="kv"><span>Applied</span><b>2</b></div>
+      <div class="kv"><span>In screen</span><b>1</b></div>
+      <div class="kv"><span>Closed</span><b>1</b></div>
+    </section>
+    <section>
+      <h3>Calibration</h3>
+      <p class="note">Across 31 applications, a missed hard gate has never converted to a screen. Missed
+      preferences convert at roughly the base rate. The model weights gates accordingly and reports
+      nothing it cannot cite.</p>
+    </section>
+    <section>
+      <h3>Known blind spot</h3>
+      <p class="note">Referrals outperform fit in this dataset. Threshold does not model who you know.</p>
+    </section>
+  </div>
+
+  <!-- ============ ranked list ============ -->
+  <div class="col">
+    <div class="tier">
+      <div class="tier-head"><h2>Apply</h2><span class="lbl">All hard gates clear or arguable</span></div>
+
+      <button class="row" aria-current="true">
+        <div class="row-top"><span class="rank num">01</span>
+          <span class="role">Senior Staff Product &amp; Program Manager</span>
+          <span class="dept">Product · Pittsburgh</span></div>
+        <div class="row-bot">
+          <span class="rail-ticks">
+            <i class="g met"></i><i class="g met"></i><i class="g part"></i><i class="g part"></i>
+            <i class="p met"></i><i class="p met"></i><i class="p met"></i>
+          </span>
+          <span class="tally">4 gates · 0 missed · 2 to argue</span>
+          <span class="verdict v-apply">Apply</span>
+          <span class="pay">$178–285K</span>
+        </div>
+      </button>
+
+      <button class="row">
+        <div class="row-top"><span class="rank num">02</span>
+          <span class="role">Staff Safety Research Scientist</span>
+          <span class="dept">Safety · Pittsburgh</span></div>
+        <div class="row-bot">
+          <span class="rail-ticks">
+            <i class="g met"></i><i class="g met"></i><i class="g met"></i><i class="g part"></i>
+            <i class="g miss"></i><i class="g miss"></i>
+            <i class="p met"></i><i class="p miss"></i><i class="p miss"></i>
+          </span>
+          <span class="tally">6 gates · 2 missed · 1/5 prefs</span>
+          <span class="verdict v-arg">Arguable</span>
+          <span class="pay">$171–273K</span>
+        </div>
+      </button>
+
+    </div>
+
+    <div class="tier">
+      <div class="tier-head"><h2>Reframe first</h2><span class="lbl">One gate needs a story</span></div>
+
+      <button class="row">
+        <div class="row-top"><span class="rank num">03</span>
+          <span class="role">Staff Safety Standards Engineer</span>
+          <span class="dept">Safety · Pittsburgh</span></div>
+        <div class="row-bot">
+          <span class="rail-ticks">
+            <i class="g met"></i><i class="g met"></i><i class="g miss"></i>
+            <i class="p met"></i><i class="p miss"></i><i class="p miss"></i>
+          </span>
+          <span class="tally">2 gates · 1 missed · 1/3 prefs</span>
+          <span class="verdict v-arg">Arguable</span>
+          <span class="pay">$171–273K</span>
+        </div>
+      </button>
+
+      <button class="row">
+        <div class="row-top"><span class="rank num">04</span>
+          <span class="role">Map Product Analyst I</span>
+          <span class="dept">Software Eng · Pittsburgh</span></div>
+        <div class="row-bot">
+          <span class="rail-ticks">
+            <i class="g met"></i><i class="g met"></i><i class="g met"></i><i class="g met"></i>
+            <i class="p met"></i><i class="p met"></i><i class="p miss"></i>
+          </span>
+          <span class="tally">4 gates · 0 missed · 2/3 prefs</span>
+          <span class="verdict v-lvl">Level mismatch</span>
+          <span class="pay">$72–108K</span>
+        </div>
+      </button>
+    </div>
+
+    <div class="tier">
+      <div class="tier-head"><h2>Blocked</h2><span class="lbl">Unarguable gate · 34 roles</span></div>
+      <button class="row">
+        <div class="row-top"><span class="rank num">—</span>
+          <span class="role">Applied Researcher</span>
+          <span class="dept">Software Eng · Pittsburgh</span></div>
+        <div class="row-bot">
+          <span class="rail-ticks">
+            <i class="g miss"></i><i class="g miss"></i><i class="g met"></i>
+            <i class="p miss"></i><i class="p miss"></i>
+          </span>
+          <span class="tally">PhD, top-tier lab · VLA models</span>
+          <span class="verdict v-block">Blocked</span>
+          <span class="pay">$223–357K</span>
+        </div>
+      </button>
+      <div class="collapsed">33 more blocked on credential gates — 17 software engineering, 9 enterprise
+        security, 4 hardware reliability, 3 supply chain. Nearest miss is Staff Software Assurance Engineer,
+        blocked on ISO 26262 Part 6.</div>
+    </div>
+  </div>
+
+  <!-- ============ detail ============ -->
+  <div class="col">
+    <div class="panel detail-head">
+      <h2>Senior Staff Product and Program Manager</h2>
+      <p>Aurora · Product Management &amp; Design · Pittsburgh, San Francisco, Mountain View</p>
+    </div>
+
+    <div class="panel">
+      <h3>Requirements ledger · 7 parsed from verbatim text</h3>
+
+      <div class="req">
+        <span class="type gate">Gate</span>
+        <div>
+          <p class="what">Minimum 7 years as a Technical Program Manager, Product Manager, or Engineering
+            Manager in autonomous systems, robotics, embedded systems, <b>or software development</b></p>
+          <span class="status s-met">Met</span>
+          <p class="ev">Epic implementation consultant 2015–17 → Box enterprise implementation 2017–19 →
+            lead PM for an AI payer-intelligence platform at Veda/H1 2021–22 → Epic Project Director at
+            Stanford Health Care 2022–25. Roughly eight years of program and product leadership, and the
+            Veda/H1 role is software development on its face.<cite>résumé · emp.veda, emp.stanford, emp.epic</cite></p>
+        </div>
+      </div>
+
+      <div class="req">
+        <span class="type gate">Gate</span>
+        <div>
+          <p class="what">Ability to work in one of our offices at least 3 days per week</p>
+          <span class="status s-met">Met</span>
+          <p class="ev">Pittsburgh-based. This posting also lists Mountain View and San Francisco; the
+            Pittsburgh band is the one that applies.<cite>profile · location</cite></p>
+        </div>
+      </div>
+
+      <div class="req">
+        <span class="type gate">Gate</span>
+        <div>
+          <p class="what">Strong project management experience with practical familiarity in both Agile and
+            Waterfall methodologies</p>
+          <span class="status s-part">Arguable · fixable today</span>
+          <p class="ev">Epic go-lives are stage-gated and waterfall by construction; the Veda/H1 platform work
+            was agile. Both are true and <b>neither word appears anywhere in the résumé</b>. This is a gate
+            you clear in substance and fail on a keyword scan.<cite>gap · name both methodologies explicitly</cite></p>
+        </div>
+      </div>
+
+      <div class="req">
+        <span class="type gate">Gate</span>
+        <div>
+          <p class="what">Up to 25% travel in the US and to Europe</p>
+          <span class="status s-open">Unconfirmed</span>
+          <p class="ev">Nothing in the corpus answers this and the scorer will not assume it. If international
+            travel at that rate does not work, this is the gate that ends the application, and it is worth
+            settling before writing anything.<cite>awaiting input</cite></p>
+        </div>
+      </div>
+
+      <div class="req">
+        <span class="type pref">Pref</span>
+        <div>
+          <p class="what">Bachelor&rsquo;s degree in Engineering, Computer Science, Math, Information Systems
+            or a related area, or the equivalent in experience &mdash; <i>preferred</i></p>
+          <span class="status s-met">Met</span>
+          <p class="ev">Printed under Required, hedged into a preference by its own last word. BS Kinesiology,
+            MSc Public Policy &amp; Management (CMU Heinz), MBA, plus a CMU data science certificate in
+            progress.<cite>résumé · education</cite></p>
+        </div>
+      </div>
+
+      <div class="req">
+        <span class="type pref">Soft</span>
+        <div>
+          <p class="what">Strong written and verbal communication, adjusted to the audience · solid technical
+            aptitude and ability to work closely with engineers</p>
+          <span class="status s-met">Met</span>
+          <p class="ev">Executive stakeholder alignment across a multi-site Epic laboratory implementation;
+            four Python repositories including an agent control plane with RBAC and hash-chained attestation.
+            Listed as required, screened on by nobody &mdash; these win interviews, not filters.
+            <cite>résumé · emp.stanford; github.com/ev-prawda92</cite></p>
+        </div>
+      </div>
+    </div>
+
+    <div class="panel">
+      <h3>Not a gate · will decide the interview</h3>
+      <p class="risk">The responsibilities describe bringing <b>new hardware platforms</b> to production with
+      hardware partners, and the corpus has no hardware program experience in it. It is not in the
+      qualifications, so it will not screen you out &mdash; but it is the first thing a hiring manager probes,
+      and stage-gate hardware development is the vocabulary to have ready. The closest true analogue is a
+      clinical laboratory go-live: fixed physical install, validation gates, no option to ship and patch.</p>
+    </div>
+
+    <div class="panel">
+      <h3>Compensation · base</h3>
+      <div class="band">
+        <div class="band-track">
+          <div class="band-fill" style="width:86%"></div>
+          <div class="band-mark" style="left:86%" data-l="ANCHOR $270K"></div>
+          <div class="band-mark" style="left:67%;background:var(--ink-3)" data-l="FLOOR $250K"></div>
+        </div>
+        <div class="band-ends"><span>$178,000 &nbsp;posted floor</span><span>posted ceiling&nbsp; $285,000</span></div>
+      </div>
+      <div class="derived">
+        <div><span class="lbl">Pittsburgh factor</span><b>0.90×</b><span class="lbl">of Bay Area band</span></div>
+        <div><span class="lbl">Anchor sits at</span><b>86th</b><span class="lbl">percentile of band</span></div>
+      </div>
+      <p class="ev" style="margin-top:12px">Senior Staff sits in the upper half of a band this wide, and the
+        current alternative is independent consulting at an annualized gross well above the midpoint. The
+        Bay Area version of this req is $197–316K.<cite>3 postings · scraped 2026-08-31</cite></p>
+    </div>
+
+    <div class="panel">
+      <h3>The full ask</h3>
+      <div class="asks">
+        <div class="askrow">
+          <span class="k">Base</span>
+          <div><span class="n">$270,000<small>floor $250,000</small></span>
+            <p>86th percentile of their own posted range. Never state this first — if they ask for a number
+              before making an offer, give the target, never a history.</p></div>
+        </div>
+        <div class="askrow">
+          <span class="k">Sign-on</span>
+          <div><span class="n">Ask $40,000<small>expect $25–30,000</small></span>
+            <p>Ask above what you will accept, because you will not get more than you name. This is the most
+              gettable line in the package: it comes from a different budget than base, it does not disturb
+              the level band, and it is a one-time number a recruiter can approve without a comp review.</p></div>
+        </div>
+        <div class="askrow">
+          <span class="k">Equity</span>
+          <div><span class="n">Ask $300K / 4 yrs<small>~$75K per year · settle $200–250K</small></span>
+            <p>State the grant in <b>dollars</b>, never share count. Aurora&rsquo;s own filed offer letters
+              convert a dollar value into units using a 20-trading-day average price, so the share count is
+              set near the grant date and a number agreed in shares can quietly change value. Also ask for
+              the annual refresh policy in writing, and — if base is capped by the band — for the shortfall
+              to move here rather than disappear.</p></div>
+        </div>
+        <div class="askrow">
+          <span class="k">Bonus</span>
+          <div><span class="n">~15% target<small>confirm the number, don&rsquo;t negotiate it</small></span>
+            <p>Aurora&rsquo;s SEC-filed executive letters carry a 40% target; individual-contributor levels
+              run far lower, and 10–20% is the realistic band. It is policy, not a lever — but you need the
+              figure to compare offers, and a prorated first year is part of what the sign-on covers.</p></div>
+        </div>
+        <div class="askrow">
+          <span class="k">Total</span>
+          <div><span class="n">$355–380K<small>the number that actually matters</small></span>
+            <p>$270K base + ~$40K bonus + $50–75K annualized equity. Verified Product Manager packages at
+              Aurora run from a $272K median to $379K at the top; Senior Staff belongs at the upper end of
+              that. Program Manager packages sit far lower ($157–229K) — make sure the conversation is
+              anchored on the product ladder, since this req sits in Product Management &amp; Design.</p></div>
+        </div>
+      </div>
+    </div>
+
+    <div class="panel">
+      <h3>Why the sign-on, specifically</h3>
+      <p class="risk">Aurora&rsquo;s filed offer letters vest RSUs <b>18.75% at a nine-month cliff, then 1/16
+      quarterly</b> — not the twelve-month cliff most companies use. So the equity gap is three quarters of a
+      year, and then a chunk lands at once. That makes the sign-on argument narrower and more precise: it
+      bridges nine months of no equity plus a prorated first-year bonus, while billable revenue stops on day
+      one. <b>Rule that generalizes: read the vesting schedule before sizing the sign-on — the cliff length is
+      the ask, and it is not always twelve months.</b></p>
+      <p class="ev" style="margin-top:10px">Vesting terms and the 20-day pricing mechanism come from an
+      Aurora employment letter filed as a 10-K exhibit. It is an executive letter, so treat the structure as
+      Aurora&rsquo;s standard and the magnitudes as not comparable.<cite>SEC · AUR 10-K exhibit 10.30</cite></p>
+    </div>
+
+    <div class="panel">
+      <h3>What you are actually comparing</h3>
+      <div style="overflow-x:auto">
+      <table class="cmp">
+        <tr><th>&nbsp;</th><th>Consulting · $125/hr</th><th>Aurora</th></tr>
+        <tr><td>Gross</td><td>~$260K at 100% utilization</td><td>base + bonus + RSUs</td></tr>
+        <tr><td>Employer payroll tax</td><td class="neg">you pay it, ~$16–19K</td><td class="pos">they pay it</td></tr>
+        <tr><td>Health insurance</td><td class="neg">you buy it</td><td class="pos">company plan</td></tr>
+        <tr><td>Retirement match</td><td class="neg">none</td><td class="pos">401(k) match</td></tr>
+        <tr><td>Time off</td><td class="neg">unbilled</td><td class="pos">12 holidays + flexible</td></tr>
+        <tr><td>Equity</td><td class="neg">none</td><td class="pos">RSUs, refreshed</td></tr>
+        <tr><td>Utilization risk</td><td class="neg">yours</td><td class="pos">theirs</td></tr>
+      </table>
+      </div>
+      <p class="ev" style="margin-top:11px">Netted out, $260K of gross consulting revenue is roughly
+        $210–220K of W-2-equivalent value — and that is at a utilization almost nobody sustains. A $265K base
+        with bonus and RSUs is a raise, not a match. Rough figures; the real ones depend on your filing
+        situation.<cite>mechanics, not financial advice</cite></p>
+    </div>
+
+    <div class="panel">
+      <h3>Sequence</h3>
+      <ol class="seq">
+        <li><b>Do not anchor first.</b> &ldquo;I&rsquo;d like to understand the full package before naming a
+          number&rdquo; is a complete answer to the first comp question.</li>
+        <li><b>If pressed, use the rate, not the income.</b> &ldquo;I&rsquo;m independent at $125 an hour.
+          Annualized that&rsquo;s about $260K gross, before employer taxes, benefits, and unbilled time.
+          I&rsquo;m targeting $270K base.&rdquo; True, and it anchors at the top of their band.</li>
+        <li><b>Negotiate the package, not the base.</b> Bands are policy and recruiters cannot break them;
+          sign-on and equity are where the discretion lives.</li>
+        <li><b>Get the whole offer before countering once.</b> One considered counter across every component
+          beats three rounds on salary alone.</li>
+      </ol>
+    </div>
+
+    <div class="panel">
+      <h3>Before you submit</h3>
+      <p class="ev">1 · Travel confirmed — gate cleared. 2 · &ldquo;Agile&rdquo; and &ldquo;Waterfall&rdquo;
+      now named in the Stanford and Veda entries. 3 · Retitled to Technical Program &amp; Product Leader.
+      4 · Hardware answer: a clinical laboratory go-live is the analogue — fixed physical install, validation
+      gates, no rollback.<cite>4 of 4 done · résumé and letter drafted 31 Aug 2026</cite></p>
+    </div>
+  </div>
+
+</div>
+
+<footer>
+  <em>Score nothing you cannot cite.</em>
+  <span>Concept mockup · figures from live Aurora postings, 31 Aug 2026</span>
+  <div class="legend">
+    <span><i class="g met" style="display:inline-block"></i> gate met</span>
+    <span><i class="g part" style="display:inline-block"></i> arguable</span>
+    <span><i class="g miss" style="display:inline-block"></i> gate missed</span>
+    <span><i class="p met" style="display:inline-block"></i> preference</span>
+  </div>
+</footer>
+
+<script>
+  const rows = document.querySelectorAll(".row");
+  rows.forEach(r => r.addEventListener("click", () => {
+    rows.forEach(o => o.removeAttribute("aria-current"));
+    r.setAttribute("aria-current", "true");
+  }));
+</script>

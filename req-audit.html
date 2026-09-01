@@ -1,0 +1,309 @@
+<title>Req Audit</title>
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Newsreader:opsz,wght@6..72,400;6..72,500;6..72,600&family=IBM+Plex+Mono:wght@400;500;600&family=IBM+Plex+Sans:wght@400;450;500;600&display=swap">
+<style>
+  :root{
+    --paper:#f4f6f8; --card:#ffffff; --sunk:#eaeef2;
+    --ink:#12181f; --ink-2:#3d4a58; --ink-3:#6b7b8c;
+    --rule:#d6dde4; --rule-2:#e7ecf1;
+    --navy:#1f3a63; --navy-soft:#e4eaf4;
+    --pass:#1c6b52; --pass-soft:#dcece5;
+    --fail:#a83c22; --fail-soft:#f6e2dc;
+    --warn:#8a6410; --warn-soft:#f6ecd6;
+    --shadow:0 1px 2px rgba(18,24,31,.05),0 8px 24px -16px rgba(18,24,31,.28);
+    --mono:"IBM Plex Mono",ui-monospace,SFMono-Regular,Menlo,monospace;
+    --sans:"IBM Plex Sans",-apple-system,BlinkMacSystemFont,"Segoe UI",sans-serif;
+    --serif:"Newsreader",Georgia,"Times New Roman",serif;
+  }
+  @media (prefers-color-scheme:dark){
+    :root:not([data-theme="light"]){
+      --paper:#0d1116; --card:#151b22; --sunk:#101620;
+      --ink:#e8eef4; --ink-2:#a8b6c4; --ink-3:#74838f;
+      --rule:#26313c; --rule-2:#1d262f;
+      --navy:#93b4e6; --navy-soft:#1a2739;
+      --pass:#6fc4a3; --pass-soft:#142a24;
+      --fail:#e08163; --fail-soft:#2e1a15;
+      --warn:#d6ab55; --warn-soft:#2a2213;
+      --shadow:0 1px 2px rgba(0,0,0,.4),0 10px 28px -18px rgba(0,0,0,.9);
+    }
+  }
+  :root[data-theme="dark"]{
+    --paper:#0d1116; --card:#151b22; --sunk:#101620;
+    --ink:#e8eef4; --ink-2:#a8b6c4; --ink-3:#74838f;
+    --rule:#26313c; --rule-2:#1d262f;
+    --navy:#93b4e6; --navy-soft:#1a2739;
+    --pass:#6fc4a3; --pass-soft:#142a24;
+    --fail:#e08163; --fail-soft:#2e1a15;
+    --warn:#d6ab55; --warn-soft:#2a2213;
+    --shadow:0 1px 2px rgba(0,0,0,.4),0 10px 28px -18px rgba(0,0,0,.9);
+  }
+
+  *{box-sizing:border-box}
+  body{background:var(--paper);color:var(--ink);font-family:var(--sans);font-size:14px;line-height:1.5;
+       -webkit-font-smoothing:antialiased}
+  .lbl{font-family:var(--mono);font-size:10px;letter-spacing:.13em;text-transform:uppercase;color:var(--ink-3)}
+  .num{font-family:var(--mono);font-variant-numeric:tabular-nums}
+  :focus-visible{outline:2px solid var(--navy);outline-offset:2px;border-radius:2px}
+  .wrap{max-width:1000px;margin:0 auto;padding:0 24px 56px}
+
+  header{border-bottom:1px solid var(--rule);background:var(--card);margin-bottom:22px}
+  .hin{max-width:1000px;margin:0 auto;padding:14px 24px;display:flex;align-items:center;gap:16px;flex-wrap:wrap}
+  .mark{display:flex;align-items:baseline;gap:9px}
+  .mark h1{font-family:var(--serif);font-size:22px;font-weight:600;margin:0;letter-spacing:-.01em}
+  .mark .sub{font-family:var(--mono);font-size:9.5px;letter-spacing:.16em;text-transform:uppercase;color:var(--ink-3)}
+  .chip{font-family:var(--mono);font-size:10px;letter-spacing:.06em;padding:3px 8px;border:1px solid var(--rule);
+        border-radius:2px;color:var(--ink-2);white-space:nowrap}
+  .meta{margin-left:auto;display:flex;gap:16px;flex-wrap:wrap}
+  .meta div{text-align:right}
+  .meta b{display:block;font-family:var(--mono);font-size:15px;font-weight:600;font-variant-numeric:tabular-nums}
+
+  .reqhead{margin-bottom:18px}
+  .reqhead h2{font-family:var(--serif);font-size:27px;font-weight:600;margin:0 0 4px;letter-spacing:-.015em;
+              text-wrap:balance}
+  .reqhead p{margin:0;color:var(--ink-3);font-size:13px}
+
+  .finding{background:var(--warn-soft);border:1px solid color-mix(in srgb,var(--warn) 30%,transparent);
+           border-radius:4px;padding:15px 17px;margin-bottom:22px;font-size:15px;line-height:1.55;
+           font-family:var(--serif)}
+  .finding b{font-weight:600}
+  .finding .lbl{display:block;margin-bottom:6px;color:var(--warn);font-family:var(--mono)}
+
+  h3.sec{font-family:var(--mono);font-size:10px;letter-spacing:.13em;text-transform:uppercase;color:var(--ink-3);
+         font-weight:500;margin:26px 0 10px;padding-bottom:6px;border-bottom:1px solid var(--rule)}
+
+  /* --- gate audit rows --- */
+  .gate{background:var(--card);border:1px solid var(--rule);border-radius:4px;padding:13px 15px;margin-bottom:8px}
+  .gate.cut{border-left:3px solid var(--fail)}
+  .gate.keep{border-left:3px solid var(--pass)}
+  .gate.demote{border-left:3px solid var(--warn)}
+  .gtop{display:flex;gap:10px;align-items:baseline;flex-wrap:wrap}
+  .gtop .txt{font-size:13.5px;line-height:1.4;flex:1;min-width:240px}
+  .verdict{font-family:var(--mono);font-size:9.5px;letter-spacing:.1em;text-transform:uppercase;padding:2px 7px;
+           border-radius:2px;white-space:nowrap}
+  .v-keep{background:var(--pass-soft);color:var(--pass)}
+  .v-cut{background:var(--fail-soft);color:var(--fail)}
+  .v-demote{background:var(--warn-soft);color:var(--warn)}
+  .gstats{display:grid;grid-template-columns:repeat(auto-fit,minmax(150px,1fr));gap:13px;margin-top:11px}
+  .stat .lbl{display:block;margin-bottom:3px}
+  .stat b{font-family:var(--mono);font-size:13px;font-weight:600;font-variant-numeric:tabular-nums}
+  .poolbar{height:5px;background:var(--sunk);border-radius:3px;margin-top:4px;overflow:hidden}
+  .poolbar i{display:block;height:100%;background:var(--navy);border-radius:3px}
+  .poolbar i.hot{background:var(--fail)}
+  .flag{color:var(--fail);font-family:var(--mono);font-size:10.5px}
+  .ok{color:var(--pass)}
+  .gnote{margin:11px 0 0;font-size:12px;line-height:1.5;color:var(--ink-2);border-left:2px solid var(--rule);
+         padding-left:10px}
+
+  .softnote{border:1px dashed var(--rule);border-radius:4px;padding:11px 14px;font-size:12.5px;color:var(--ink-3);
+            line-height:1.5}
+
+  /* --- panels --- */
+  .grid2{display:grid;grid-template-columns:repeat(auto-fit,minmax(320px,1fr));gap:14px}
+  .panel{background:var(--card);border:1px solid var(--rule);border-radius:4px;padding:16px}
+  .panel h4{margin:0 0 4px;font-family:var(--serif);font-size:16px;font-weight:600}
+  .panel .sub{margin:0 0 12px;font-size:12px;color:var(--ink-3)}
+  .item{display:grid;grid-template-columns:46px 1fr;gap:11px;padding:10px 0;border-top:1px solid var(--rule-2)}
+  .item:first-of-type{border-top:0;padding-top:0}
+  .item .q{font-family:var(--mono);font-size:17px;font-weight:600;font-variant-numeric:tabular-nums;
+           letter-spacing:-.02em;line-height:1.1}
+  .item p{margin:0;font-size:12.5px;line-height:1.45;color:var(--ink-2)}
+  .item p b{color:var(--ink)}
+
+  table.edits{width:100%;border-collapse:collapse;font-size:12.5px}
+  table.edits th{text-align:left;font-family:var(--mono);font-size:9.5px;letter-spacing:.09em;text-transform:uppercase;
+                 color:var(--ink-3);font-weight:500;padding:0 10px 7px 0;border-bottom:1px solid var(--rule)}
+  table.edits td{padding:9px 10px 9px 0;border-bottom:1px solid var(--rule-2);color:var(--ink-2);vertical-align:top}
+  table.edits td:first-child{color:var(--ink);width:44%}
+  table.edits .gain{font-family:var(--mono);color:var(--pass);white-space:nowrap;font-variant-numeric:tabular-nums}
+
+  footer{margin-top:30px;padding-top:16px;border-top:1px solid var(--rule);color:var(--ink-3);font-size:11.5px;
+         display:flex;gap:14px;flex-wrap:wrap;align-items:baseline}
+  footer em{font-family:var(--serif);font-style:italic;font-size:14px;color:var(--ink-2)}
+</style>
+
+<header>
+  <div class="hin">
+    <div class="mark"><h1>Req Audit</h1><span class="sub">Threshold</span></div>
+    <span class="chip">Concept mockup</span>
+    <div class="meta">
+      <div><span class="lbl">Open</span><b>41d</b></div>
+      <div><span class="lbl">Applicants</span><b>214</b></div>
+      <div><span class="lbl">In process</span><b>6</b></div>
+      <div><span class="lbl">Offers</span><b>0</b></div>
+    </div>
+  </div>
+</header>
+
+<div class="wrap">
+
+  <div class="reqhead">
+    <h2>Senior Staff Product and Program Manager</h2>
+    <p>Product Management &amp; Design · Mountain View, San Francisco, Pittsburgh · $178,000–$285,000 ·
+       11 stated requirements, 4 of them real</p>
+  </div>
+
+  <div class="finding">
+    <span class="lbl">Finding</span>
+    Two gates are doing almost all of the filtering, and neither predicts performance. <b>3% of applicants
+    clear all four gates.</b> Removing the travel requirement from the screen and demoting the methodology
+    bullet would take the qualified pool from 6 candidates to an estimated 31 — without touching the
+    experience requirement that actually correlates with your successful hires.
+  </div>
+
+  <h3 class="sec">Gate audit · what each requirement costs</h3>
+
+  <div class="gate keep">
+    <div class="gtop">
+      <span class="txt">Minimum 7 years as a Technical Program Manager, Product Manager, or Engineering
+        Manager in autonomous systems, robotics, embedded systems, or software development</span>
+      <span class="verdict v-keep">Keep</span>
+    </div>
+    <div class="gstats">
+      <div class="stat"><span class="lbl">Applicants clearing</span><b>34%</b>
+        <div class="poolbar"><i style="width:34%"></i></div></div>
+      <div class="stat"><span class="lbl">Present in past hires</span><b>5 of 5</b></div>
+      <div class="stat"><span class="lbl">Impact ratio</span><b class="ok">0.94</b></div>
+      <div class="stat"><span class="lbl">Screen decisions</span><b>73</b></div>
+    </div>
+    <p class="gnote">The one gate carrying real signal. Note that the trailing “or software development”
+      widens it by roughly 3×; several screeners are applying it as though it read “autonomous systems” only,
+      which is rejecting candidates the req admits.</p>
+  </div>
+
+  <div class="gate cut">
+    <div class="gtop">
+      <span class="txt">Up to 25% travel in the US and to Europe</span>
+      <span class="verdict v-cut">Move out of screen</span>
+    </div>
+    <div class="gstats">
+      <div class="stat"><span class="lbl">Applicants clearing</span><b>44%</b>
+        <div class="poolbar"><i class="hot" style="width:44%"></i></div></div>
+      <div class="stat"><span class="lbl">Present in past hires</span><b>n/a</b></div>
+      <div class="stat"><span class="lbl">Impact ratio</span><b class="flag">0.71 ⚠</b></div>
+      <div class="stat"><span class="lbl">Screen decisions</span><b>61</b></div>
+    </div>
+    <p class="gnote"><b>Below the four-fifths threshold.</b> Selection rate for candidates with caregiving
+      indicators is 71% of the highest group&rsquo;s — the pattern an adverse-impact review looks for, and the
+      kind of finding that has to be disclosed under an annual bias audit. It is also unnecessary as a
+      <i>screen</i>: travel is a condition of the job, not a qualification. Confirm it at offer stage and it
+      stops filtering the pipeline while remaining a requirement of the role.</p>
+  </div>
+
+  <div class="gate demote">
+    <div class="gtop">
+      <span class="txt">Strong project management experience with practical familiarity in both Agile and
+        Waterfall methodologies</span>
+      <span class="verdict v-demote">Demote to preferred</span>
+    </div>
+    <div class="gstats">
+      <div class="stat"><span class="lbl">Applicants clearing</span><b>61%</b>
+        <div class="poolbar"><i style="width:61%"></i></div></div>
+      <div class="stat"><span class="lbl">Present in past hires</span><b>2 of 5</b></div>
+      <div class="stat"><span class="lbl">Impact ratio</span><b class="ok">0.91</b></div>
+      <div class="stat"><span class="lbl">Screen decisions</span><b>48</b></div>
+    </div>
+    <p class="gnote">Three of your five successful hires did not state both words, and two were hired anyway
+      after a hiring-manager override. A gate your own team routinely overrides is not a gate — it is a
+      keyword tax on candidates who describe the same work differently.</p>
+  </div>
+
+  <div class="gate keep">
+    <div class="gtop">
+      <span class="txt">Ability to work in one of our offices at least 3 days per week</span>
+      <span class="verdict v-keep">Keep · state it earlier</span>
+    </div>
+    <div class="gstats">
+      <div class="stat"><span class="lbl">Applicants clearing</span><b>52%</b>
+        <div class="poolbar"><i style="width:52%"></i></div></div>
+      <div class="stat"><span class="lbl">Present in past hires</span><b>5 of 5</b></div>
+      <div class="stat"><span class="lbl">Impact ratio</span><b class="ok">0.88</b></div>
+      <div class="stat"><span class="lbl">Withdrawals citing it</span><b class="flag">9</b></div>
+    </div>
+    <p class="gnote">A real constraint, but it is the last bullet in the posting. Nine candidates withdrew
+      after a screen once they learned of it — roughly 40 hours of recruiter time spent on people the first
+      paragraph could have filtered.</p>
+  </div>
+
+  <div class="softnote">
+    <b style="color:var(--ink)">The other seven requirements screen nobody.</b> “Strong written and verbal
+    communication,” “solid technical aptitude,” and five more are stated under Required Qualifications and
+    have never been the recorded reason for a rejection. They are not harmful, but the posting reads as
+    eleven demands when four are real — and length correlates with self-selection out, particularly among
+    candidates who match on substance and not on vocabulary.
+  </div>
+
+  <h3 class="sec">Blind spots</h3>
+  <div class="grid2">
+    <div class="panel">
+      <h4>Rejected on a gate that carries no signal</h4>
+      <p class="sub">Cleared every other requirement</p>
+      <div class="item"><span class="q">7</span>
+        <p>Rejected solely on the <b>Agile and Waterfall</b> bullet. All seven cleared the experience gate.
+          Two are currently in process at a competitor for the same title.</p></div>
+      <div class="item"><span class="q">19</span>
+        <p>Had the experience but described it as <b>implementation, delivery, or transformation</b> rather
+          than program management. Matched on evidence, missed on keyword.</p></div>
+      <div class="item"><span class="q">3</span>
+        <p>Rejected for “no autonomy background” — a phrase that <b>does not appear in this req</b>.
+          Screener drift, not a stated requirement.</p></div>
+    </div>
+
+    <div class="panel">
+      <h4>Right person, wrong req</h4>
+      <p class="sub">Rejected here, clears every gate elsewhere in your pipeline</p>
+      <div class="item"><span class="q">4</span>
+        <p>Clear all gates on <b>Technical Program Manager, HW Systems and Safety</b> — open 63 days, nobody
+          in process.</p></div>
+      <div class="item"><span class="q">2</span>
+        <p>Clear all gates on <b>Staff Technical Program Manager, EDS</b>.</p></div>
+      <div class="item"><span class="q">1</span>
+        <p>Clears <b>Staff Safety Research Scientist</b> on every gate except the publications requirement.</p></div>
+    </div>
+  </div>
+
+  <h3 class="sec">Level and offer risk</h3>
+  <div class="panel">
+    <h4>This title spans two ladders</h4>
+    <p class="sub">“Product and Program Manager” · posted band matches one of them</p>
+    <div class="item"><span class="q">⚑</span>
+      <p>The posted band of <b>$178–285K</b> sits on the product ladder. Verified packages for program
+        managers at this company run <b>$157–229K</b> — a gap of roughly $60K at the midpoint. One of your six
+        in-process candidates has been leveled onto the program ladder after interviewing against a product
+        loop. That offer will be declined, and the candidate will tell people why.</p></div>
+    <div class="item"><span class="q">↺</span>
+      <p>RSUs here cliff at <b>nine months</b>, not twelve. Candidates leaving contract or consulting work
+        consistently ask for a sign-on to bridge it. Budgeting <b>$25–30K</b> up front closes faster than
+        discovering the gap during a counter.</p></div>
+  </div>
+
+  <h3 class="sec">Recommended edits</h3>
+  <div class="panel">
+    <div style="overflow-x:auto">
+    <table class="edits">
+      <tr><th>Change</th><th>Why</th><th>Effect on pool</th></tr>
+      <tr><td>Move travel from a screen to an offer-stage condition</td>
+          <td>Adverse impact ratio 0.71; it is a job condition, not a qualification</td>
+          <td class="gain">+2.3×</td></tr>
+      <tr><td>Demote the Agile/Waterfall bullet to preferred</td>
+          <td>Overridden by your own hiring managers in 2 of 5 hires</td>
+          <td class="gain">+1.6×</td></tr>
+      <tr><td>Move the 3-days-in-office line into the first paragraph</td>
+          <td>9 late withdrawals, ~40 recruiter hours</td>
+          <td class="gain">no change · saves time</td></tr>
+      <tr><td>Cut the seven unscreenable bullets to two</td>
+          <td>Length drives self-selection out; none has ever caused a rejection</td>
+          <td class="gain">+1.2× est.</td></tr>
+      <tr><td>Confirm the ladder before the next offer goes out</td>
+          <td>$60K gap between the two ladders this title spans</td>
+          <td class="gain">1 offer at risk</td></tr>
+    </table>
+    </div>
+  </div>
+
+  <footer>
+    <em>Question the req, not just the pipeline.</em>
+    <span>Concept mockup · requirement text is verbatim from a live posting; pipeline, impact, and hire-history
+      figures are illustrative. Impact ratios shown against the four-fifths convention.</span>
+  </footer>
+</div>
