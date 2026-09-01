@@ -10,7 +10,10 @@
 from __future__ import annotations
 
 import argparse
+import os
 import sys
+
+DB = os.environ.get("THRESHOLD_DB", "threshold.db")
 
 
 def main(argv: list[str] | None = None) -> int:
@@ -44,10 +47,10 @@ def main(argv: list[str] | None = None) -> int:
 
     if args.cmd == "score":
         from .score import score
-        with store.connect("threshold.db") as conn:
+        with store.connect(DB) as conn:
             req = store.load_req(conn, args.slug)
         if req is None:
-            print(f"no req '{args.slug}' — run: python -m threshold seed"); return 1
+            print(f"no req '{args.slug}' in {DB} — run: python -m threshold seed"); return 1
         card = score(req, load_profile(args.profile))
         print(f"\n  {req.title}\n  {card.verdict.value.upper()} — {card.summary}\n")
         for f in card.findings:
@@ -63,7 +66,7 @@ def main(argv: list[str] | None = None) -> int:
 
     if args.cmd == "audit":
         from .audit import audit_req
-        with store.connect("threshold.db") as conn:
+        with store.connect(DB) as conn:
             a = audit_req(conn, args.slug)
         print(f"\n  {a.title}\n  {a.applicants} applicants · {a.rejections} rejections captured\n")
         for g in a.gates:

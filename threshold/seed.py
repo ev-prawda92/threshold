@@ -9,6 +9,7 @@ the audit has something to compute. Every generated file says so.
 
 from __future__ import annotations
 
+import os
 import random
 from pathlib import Path
 
@@ -17,7 +18,7 @@ import yaml
 from . import store
 from .parse import req_from_labeled
 
-DB = "threshold.db"
+DB = os.environ.get("THRESHOLD_DB", "threshold.db")
 CAND_DIR = Path("demo/candidates")
 
 # name, years, tags, note
@@ -67,7 +68,12 @@ def write_candidate(name: str, years: int, tags: list[str], note: str) -> tuple[
 
 
 def main() -> None:
-    Path(DB).unlink(missing_ok=True)
+    try:
+        Path(DB).unlink(missing_ok=True)
+    except OSError:
+        # Some mounts refuse deletes. Re-seeding on top is fine: reqs are
+        # replaced by slug and dispositions append.
+        pass
     store.init(DB)
     data = yaml.safe_load(Path("data/aurora-pittsburgh.yaml").read_text())
     rng = random.Random(11)

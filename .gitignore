@@ -9,3 +9,4 @@ threshold.db
 threshold-repo/
 threshold-repo.zip
 demo/candidates/
+*.db-journal
