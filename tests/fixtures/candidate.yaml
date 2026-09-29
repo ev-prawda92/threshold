@@ -1,0 +1,74 @@
+# Test fixture: an invented candidate the test suite scores postings against.
+# It is committed so the tests run on a fresh clone; your own profile.yaml
+# stays gitignored.
+
+person:
+  name: Jane Example
+  location: Pittsburgh, PA
+  open_to_relocation: true
+  current_scope: senior
+  target_band_floor_usd: 150000
+evidence:
+- id: emp.early
+  kind: employment
+  org: Example Health
+  title: Implementation Lead
+  start: 2014-06
+  end: 2018-12
+  claims:
+  - Led clinical software implementations across multiple hospital sites
+  tags:
+  - program-management
+  - software-development
+  source: resume
+- id: emp.overlap
+  kind: employment
+  org: Example Ventures
+  title: Co-founder
+  start: 2017-01
+  end: 2019-06
+  claims:
+  - Built and shipped a consumer software product alongside a full-time role
+  tags:
+  - product-management
+  - software-development
+  source: resume
+- id: emp.recent
+  kind: employment
+  org: Example Systems
+  title: Senior Product Manager
+  start: 2019-07
+  end: 2025-12
+  claims:
+  - Owned a safety-critical software product from v0 to launch
+  tags:
+  - product-management
+  - safety-critical
+  - software-development
+  source: resume
+- id: work.example
+  kind: repo
+  title: example-engine
+  language: Python
+  claims:
+  - Deterministic evaluation harness with per-decision provenance
+  tags:
+  - python
+  - evaluation
+  source: github.com/example/example-engine
+- id: edu.example
+  kind: education
+  org: Example University
+  credential: MSc, Statistics
+  year: 2021
+  tags:
+  - advanced-degree
+  - statistics
+  source: resume
+absent:
+- publications
+- robotics
+- c++
+- iso_26262
+- phd
+- hardware_development_npi
