@@ -18,6 +18,7 @@ from threshold.profile import load_profile
 from threshold.score import Status, Verdict, score
 
 DATA = Path("data/aurora-pittsburgh.yaml")
+FIXTURE_PROFILE = Path(__file__).parent / "fixtures" / "candidate.yaml"
 PPM = "senior-staff-product-and-program-manager"
 
 
@@ -28,7 +29,7 @@ def postings():
 
 @pytest.fixture(scope="module")
 def profile():
-    return load_profile("profile.yaml")
+    return load_profile(FIXTURE_PROFILE)
 
 
 @pytest.fixture()
@@ -38,7 +39,7 @@ def db(tmp_path, postings):
     with store.connect(path) as conn:
         for p in postings.values():
             store.save_req(conn, req_from_labeled(p, "Aurora"))
-        store.add_candidate(conn, "evan", "Evan", "profile.yaml")
+        store.add_candidate(conn, "evan", "Evan", str(FIXTURE_PROFILE))
     return path
 
 

@@ -6,6 +6,7 @@ A claim with no source is an assertion, and the scorer will not cite it.
 from __future__ import annotations
 
 import re
+import sys
 from dataclasses import dataclass, field
 from datetime import date
 from pathlib import Path
@@ -99,8 +100,23 @@ def _months(start: str | None, end: str | None) -> int:
     return 0 if a is None or b is None else max(0, b - a)
 
 
+def _resolve(path: str | Path) -> Path:
+    """Use the committed example when the private profile.yaml isn't there.
+
+    profile.yaml is gitignored, so a fresh clone has only profile.example.yaml.
+    Falling back keeps every documented command runnable on a clean checkout.
+    """
+    p = Path(path)
+    if not p.exists() and p.name == "profile.yaml":
+        example = p.with_name("profile.example.yaml")
+        if example.exists():
+            print(f"note: {p} not found; using {example}", file=sys.stderr)
+            return example
+    return p
+
+
 def load_profile(path: str | Path) -> Profile:
-    raw = yaml.safe_load(Path(path).read_text())
+    raw = yaml.safe_load(_resolve(path).read_text())
     person = raw.get("person", {})
     prof = Profile(
         name=person.get("name", "unnamed"),
